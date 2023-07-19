@@ -13,13 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class Match_RecyclerViewAdapter extends RecyclerView.Adapter<Match_RecyclerViewAdapter.MyViewHolder> {
+    private final RecyclerViewInterface recyclerViewInterface;
 
     Context context;
     ArrayList<MatchModel> matchModels;
 
-    public Match_RecyclerViewAdapter(Context context, ArrayList<MatchModel> matchModels){
+    public Match_RecyclerViewAdapter(Context context, ArrayList<MatchModel> matchModels,
+                                     RecyclerViewInterface recyclerViewInterface){
         this.context = context;
         this.matchModels = matchModels;
+        this.recyclerViewInterface = recyclerViewInterface;
 
     }
 
@@ -29,7 +32,7 @@ public class Match_RecyclerViewAdapter extends RecyclerView.Adapter<Match_Recycl
         // This is where you inflate the layout (Giving a look to our rows)
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recycler_view_row, parent, false);
-        return new Match_RecyclerViewAdapter.MyViewHolder(view);
+        return new Match_RecyclerViewAdapter.MyViewHolder(view, recyclerViewInterface);
     }
 
     @Override
@@ -56,13 +59,27 @@ public class Match_RecyclerViewAdapter extends RecyclerView.Adapter<Match_Recycl
         TextView match, hour, cup, channel;
         //ImageView imageView;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
 
             match = itemView.findViewById(R.id.match);
             hour = itemView.findViewById(R.id.hour);
             cup = itemView.findViewById(R.id.cup);
             channel = itemView.findViewById(R.id.channel);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(recyclerViewInterface != null){
+                        // deprecated part getAdapterPosition();
+                        int pos = getAbsoluteAdapterPosition();
+                        if (pos != RecyclerView.NO_POSITION) {
+                            recyclerViewInterface.onItemClick(pos);
+                        }
+
+                    }
+                }
+            });
         }
     }
 }

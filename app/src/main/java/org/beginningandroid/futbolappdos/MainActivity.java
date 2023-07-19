@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
     ArrayList<String> numberList;
     ArrayList<String> numberTitle;
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         setUpMatchmodels();
 
-        Match_RecyclerViewAdapter adapter = new Match_RecyclerViewAdapter(this, matchmodels);
+        Match_RecyclerViewAdapter adapter = new Match_RecyclerViewAdapter(this, matchmodels, this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -45,5 +45,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
     }
 }
