@@ -1,5 +1,7 @@
 package org.beginningandroid.futbolappdos;
 
+import static java.lang.Character.toLowerCase;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
@@ -50,9 +53,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemClick(int position) {
-        Intent intent = new Intent(MainActivity.this, VideoActivity.class);
-        intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
-        startActivity(intent);
+        String[] words = {"word1", "win sports +", "dsports", "word4", "word5"};
+        for (String element: words) {
+            if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
+                Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                startActivity(intent);
 
+            }
+        }
     }
 }
