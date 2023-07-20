@@ -29,6 +29,7 @@ public class VideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //// Setting Full screen from Futbolero plus App.
+
         requestWindowFeature(1);
         getWindow().setFlags(1024, 1024);
         getWindow().getDecorView().setSystemUiVisibility(5894);
