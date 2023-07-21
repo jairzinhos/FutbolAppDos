@@ -74,7 +74,7 @@ public class VideoActivity extends AppCompatActivity {
         webSettings.setAllowFileAccess(true);
 
         Intent receiverIntent = getIntent();
-        String receivedValue =  receiverIntent.getStringExtra("KEY_SENDER") + "&id=1251MYGhjUuoYj&id=1181&ram=4765$%&m2001HTgj";
+        String receivedValue =  receiverIntent.getStringExtra("KEY_SENDER") + "";
 
 
         //URL link = new URL("https://arenacdmexico.com/canales/dtv2b.html?id=1251&", receivedValue );

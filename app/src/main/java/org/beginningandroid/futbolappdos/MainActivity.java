@@ -10,7 +10,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
@@ -53,11 +55,32 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemClick(int position) {
-        String[] words = {"word1", "win sports +", "dsports", "word4", "word5"};
+        String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn"};
+        Map<String, Integer> dictionary = new HashMap<String, Integer>();
+        dictionary.put("win sports +", 1251);
+        dictionary.put("dsports", 1071);
+        dictionary.put("espn 2", 1100);
+        dictionary.put("tyc sports", 1240);
+        dictionary.put("goltv", 1134);
+        dictionary.put("espn", 1107);
+
+
+        String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
+
         for (String element: words) {
             if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
                 Intent intent = new Intent(MainActivity.this, VideoActivity.class);
-                intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
+                String channelsString = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                String keyMaster = null;
+                String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+                for (String key : dictionary.keySet()) {
+                    if (channelsString.contains(key)) {
+                        keyMaster = key;
+                    }
+                }
+                intent.putExtra("KEY_SENDER", linkRoot + dictionary.get(keyMaster) + ran);
                 startActivity(intent);
 
             }
