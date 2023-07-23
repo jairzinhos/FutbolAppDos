@@ -8,16 +8,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
     ArrayList<String> numberList;
     ArrayList<String> numberTitle;
+    private ProgressBar loadingPB;
+
+     ArrayList<String> arrayListName;
+     ArrayList<String> arrayListLastName;
+    ArrayList<String> arrayListEmail;
+    ArrayList<String> arrayListAvatar;
 
 
     @Override
@@ -41,6 +61,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private void setUpMatchmodels() {
 
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
+        /*
+        getDataFromAPI();
+
+        String[] newmatches = new String[arrayListName.size()];
+
+        for (int i = 0; i < arrayListName.size(); i++){
+            newmatches[i] =arrayListName.get(i);
+        }
+        MatchModel movieUno = new MatchModel(newmatches[0], newmatches[1], newmatches[0], "holi" );
+        matchmodels.add(movieUno);
+
+         */
 
         MatchModel movie = new MatchModel(numberList.get(0), numberList.get(1), numberList.get(2), numberList.get(3));
         matchmodels.add(movie);
@@ -55,7 +87,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemClick(int position) {
-        String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn"};
+        /*
+        getDataFromAPI();
+
+        String[] newmatches = new String[arrayListName.size()];
+
+        for (int i = 0; i < arrayListName.size(); i++){
+            newmatches[i] =arrayListName.get(i);
+        }
+
+         */
+
+        //// https://stackoverflow.com/questions/60690324/read-a-google-spreadsheet-from-an-android-app-and-list-out-that-data
+        /// Review code for conncetion with google sheets..
+
+        /// https://docs.google.com/spreadsheets/d/e/2PACX-1vQmtmvyVhA_nZ4mRYOMPyXs2-jyHozuogbeURAAQ5Hfa0ITOJ9TPAnpBjpCiYG7bp83l8rmWmeejt1g/pubhtml
+        /// json link https://spreadsheets.google.com/feeds/list/158x_7C-U19e9R4EuYL4tTUSBatelIJ2WPhzCdKrM_Qg/od6/public/values?alt=json
+        /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
+        String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn", "directv 610"};
         Map<String, Integer> dictionary = new HashMap<String, Integer>();
         dictionary.put("win sports +", 1251);
         dictionary.put("dsports", 1071);
@@ -63,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         dictionary.put("tyc sports", 1240);
         dictionary.put("goltv", 1134);
         dictionary.put("espn", 1107);
+        dictionary.put("directv 610", 1057);
 
 
         String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
@@ -86,4 +136,60 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }
     }
+    /*
+    private void getDataFromAPI() {
+
+        // creating a string variable for URL.
+        String url = "https://spreadsheets.google.com/feeds/list/158x_7C-U19e9R4EuYL4tTUSBatelIJ2WPhzCdKrM_Qg/od6/public/values?alt=json";
+
+        // creating a new variable for our request queue
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+
+        // creating a variable for our JSON object request and passing our URL to it.
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                loadingPB.setVisibility(View.GONE);
+                try {
+                    JSONObject feedObj = response.getJSONObject("feed");
+                    JSONArray entryArray = feedObj.getJSONArray("entry");
+                    for(int i=0; i<entryArray.length(); i++){
+                        JSONObject entryObj = entryArray.getJSONObject(i);
+                        String firstName = entryObj.getJSONObject("gsx$match").getString("$t");
+                        String lastName = entryObj.getJSONObject("gsx$hour").getString("$t");
+                        String email = entryObj.getJSONObject("gsx$cup").getString("$t");
+                        String avatar = entryObj.getJSONObject("gsx$channel").getString("$t");
+                        arrayListName.add(firstName);
+                        arrayListLastName.add(lastName);
+                        arrayListEmail.add(email);
+                        arrayListAvatar.add(avatar);
+
+                        // passing array list to our adapter class.
+                        ////userRVAdapter = new UserRVAdapter(userModalArrayList, MainActivity.this);
+
+                        // setting layout manager to our recycler view.
+                        ////userRV.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                        // setting adapter to our recycler view.
+                        ////userRV.setAdapter(userRVAdapter);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // handling on error listener method.
+                Toast.makeText(MainActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // calling a request queue method
+        // and passing our json object
+        queue.add(jsonObjectRequest);
+    }
+
+     */
 }

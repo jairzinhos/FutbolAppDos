@@ -26,6 +26,12 @@ public class IntroActivity extends AppCompatActivity {
     ArrayList<String> listFutbolHeaders = new ArrayList<>();
     ArrayList<String> listFutbolHeaders1 = new ArrayList<>();
     ArrayList<String> listFutbolTitles = new ArrayList<>();
+
+    ArrayList<String> listFutbolHeaders1Agenda = new ArrayList<>();
+    ArrayList<String> listFutbolHeadersAgenda = new ArrayList<>();
+
+    ArrayList<String> listFutbolTitlesAgenda = new ArrayList<>();
+
     ArrayList<String> numbers = new ArrayList<>();
     String title;
     String singleText;
@@ -57,12 +63,13 @@ public class IntroActivity extends AppCompatActivity {
 
                 //Document doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
                 Document doc = null;
+                Document agen = null;
                 try {
                     doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
 
                     //String title = doc.title();
                     //String title = doc.selectFirst("div[class");
-                    JSONObject jsonParentObject = new JSONObject();
+                    //JSONObject jsonParentObject = new JSONObject();
                     //*****JSONArray list = new JSONArray();
                     ///Elements links = doc.select("a[href]");
                     //Elements links = doc.select("table");
@@ -86,10 +93,30 @@ public class IntroActivity extends AppCompatActivity {
                         listFutbolHeaders1.add(listFutbolHeaders.get(i));
                     }
 
+                    agen = Jsoup.connect("https://docs.google.com/spreadsheets/d/e/2PACX-1vQmtmvyVhA_nZ4mRYOMPyXs2-jyHozuogbeURAAQ5Hfa0ITOJ9TPAnpBjpCiYG7bp83l8rmWmeejt1g/pubhtml#").get();
+
+                    Element agenda = agen.select("table").first();
+                    //Elements linksUno = doc.selectFirst("links");
+                    Elements datos = agenda.select("td");
+                    Element tituloUno = agenda.select("th").first();
+
+                    listFutbolTitlesAgenda.clear();
+                    listFutbolTitlesAgenda.add(tituloUno.text());
+
+                    listFutbolHeadersAgenda.clear();
+                    listFutbolHeaders1Agenda.clear();
+                    for(Element titulo : datos) {
+                        listFutbolHeadersAgenda.add(titulo.text());
+                    }
+
+
+                    for( int i = 0; i < listFutbolHeadersAgenda.size(); i++) {
+                        listFutbolHeaders1Agenda.add(listFutbolHeadersAgenda.get(i));
+                    }
 
 
                     //Elements headers = links.select("th");
-                    titulos.append(ths.text());
+                    //titulos.append(ths.text());
 
 
                     //for (Element header : ths) {
@@ -113,7 +140,7 @@ public class IntroActivity extends AppCompatActivity {
                         //text3.setText(Html.fromHtml(stringBuilder.toString()));
                         title = listFutbolHeaders.get(0);
                         //text3.setText("" + listFutbolHeaders1.get(1));
-                        text3.setText("" + listFutbolTitles.get(0));
+                        text3.setText("" + listFutbolTitles.get(0) + listFutbolHeaders1Agenda.get(10));
                         singleText = listFutbolHeaders1.get(2);
 
                         Intent intent = new Intent(IntroActivity.this, MainActivity.class);
