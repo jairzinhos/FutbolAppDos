@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,11 +40,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> arrayListEmail;
     ArrayList<String> arrayListAvatar;
 
+    ArrayList<String> keyWords = new ArrayList<>();
+
+    TextView textViewUno;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TextView textViewUnoD = findViewById(R.id.textViewUno);
 
         RecyclerView recyclerView = findViewById(R.id.mRecyclerView);
 
@@ -60,6 +66,30 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        //setTextViewUno ();
+
+
+
+    }
+
+    private void setTextViewUno (){
+
+        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+        //keyWords.clear();
+        /*
+
+        for (int i=11;i<numberMatchesLinks.size(); i = i + 8) {
+            keyWords.add(numberMatchesLinks.get(i));
+
+
+
+        }
+
+         */
+        textViewUno.setText(keyWords.size());
     }
 
     private void setUpMatchmodels() {
@@ -127,14 +157,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
 
 
-        ArrayList<String> keyWords = new ArrayList<>();
+        //ArrayList<String> keyWords = new ArrayList<>();
+        /*
         keyWords.clear();
 
         for (int i=11;i<numberMatchesLinks.size(); i = i + 8) {
             keyWords.add(numberMatchesLinks.get(i));
 
 
+
         }
+
+         */
+        //textViewUno.setText(keyWords.toString());
 
 
         //String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
