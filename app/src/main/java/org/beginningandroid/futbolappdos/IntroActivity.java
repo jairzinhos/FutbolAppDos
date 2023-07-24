@@ -32,6 +32,12 @@ public class IntroActivity extends AppCompatActivity {
 
     ArrayList<String> listFutbolTitlesAgenda = new ArrayList<>();
 
+    ArrayList<String> listFutbolHeadersLinkMatches = new ArrayList<>();
+    ArrayList<String> listFutbolHeaders1LinkMatches = new ArrayList<>();
+
+    ArrayList<String> listFutbolTitlesLinkMatches = new ArrayList<>();
+
+
     ArrayList<String> numbers = new ArrayList<>();
     String title;
     String singleText;
@@ -64,6 +70,7 @@ public class IntroActivity extends AppCompatActivity {
                 //Document doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
                 Document doc = null;
                 Document agen = null;
+                Document linkMatch = null;
                 try {
                     doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
 
@@ -114,6 +121,27 @@ public class IntroActivity extends AppCompatActivity {
                         listFutbolHeaders1Agenda.add(listFutbolHeadersAgenda.get(i));
                     }
 
+                    linkMatch = Jsoup.connect("https://docs.google.com/spreadsheets/d/e/2PACX-1vTfbxVW1fzSj79nyIGv2Anp9GsrZ8Vp1UxLO7_sas-AI4iogGQQR8xywH1kVa-ZCoYNRCDoy_ZTuyhY/pubhtml").get();
+
+                    Element linkMatchUno = linkMatch.select("table").first();
+                    //Elements linksUno = doc.selectFirst("links");
+                    Elements datosUno = linkMatchUno.select("td");
+                    Element tituloDos = linkMatchUno.select("th").first();
+
+                    listFutbolTitlesLinkMatches.clear();
+                    listFutbolTitlesLinkMatches.add(tituloDos.text());
+
+                    listFutbolHeadersLinkMatches.clear();
+                    listFutbolHeaders1LinkMatches.clear();
+                    for(Element titulo : datosUno) {
+                        listFutbolHeadersLinkMatches.add(titulo.text());
+                    }
+
+
+                    for( int i = 0; i < listFutbolHeadersLinkMatches.size(); i++) {
+                        listFutbolHeaders1LinkMatches.add(listFutbolHeadersLinkMatches.get(i));
+                    }
+
 
                     //Elements headers = links.select("th");
                     //titulos.append(ths.text());
@@ -140,12 +168,14 @@ public class IntroActivity extends AppCompatActivity {
                         //text3.setText(Html.fromHtml(stringBuilder.toString()));
                         title = listFutbolHeaders.get(0);
                         //text3.setText("" + listFutbolHeaders1.get(1));
-                        text3.setText("" + listFutbolTitles.get(0) + listFutbolHeaders1Agenda.get(10));
+                        text3.setText("" + listFutbolTitles.get(0) + listFutbolHeaders1LinkMatches.get(8));
                         singleText = listFutbolHeaders1.get(2);
 
                         Intent intent = new Intent(IntroActivity.this, MainActivity.class);
                         intent.putExtra("key", listFutbolHeaders1);
                         intent.putExtra("keyUno", listFutbolTitles);
+                        intent.putExtra("agenda",listFutbolHeaders1Agenda);
+                        intent.putExtra("matchesLinks", listFutbolHeaders1LinkMatches);
                         startActivity(intent);
                         //List<String> listFutbolHeaders1 = listFutbolHeaders;
                         ///for(String titulo: listFutbolHeaders){

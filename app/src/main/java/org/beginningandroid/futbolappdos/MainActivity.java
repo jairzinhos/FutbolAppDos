@@ -50,6 +50,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
         ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
+        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+
         setUpMatchmodels();
 
         Match_RecyclerViewAdapter adapter = new Match_RecyclerViewAdapter(this, matchmodels, this);
@@ -101,8 +105,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         //// https://stackoverflow.com/questions/60690324/read-a-google-spreadsheet-from-an-android-app-and-list-out-that-data
         /// Review code for conncetion with google sheets..
 
+        /// Documento para canales adicionales: Futbol para todos DB. Google Sheets
         /// https://docs.google.com/spreadsheets/d/e/2PACX-1vQmtmvyVhA_nZ4mRYOMPyXs2-jyHozuogbeURAAQ5Hfa0ITOJ9TPAnpBjpCiYG7bp83l8rmWmeejt1g/pubhtml
         /// json link https://spreadsheets.google.com/feeds/list/158x_7C-U19e9R4EuYL4tTUSBatelIJ2WPhzCdKrM_Qg/od6/public/values?alt=json
+
+
+
         /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
         String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn", "directv 610"};
         Map<String, Integer> dictionary = new HashMap<String, Integer>();
@@ -114,8 +122,46 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         dictionary.put("espn", 1107);
         dictionary.put("directv 610", 1057);
 
+        /// Creating Array lists to connect directly to DB
+        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
 
-        String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
+
+        ArrayList<String> keyWords = new ArrayList<>();
+        keyWords.clear();
+
+        for (int i=11;i<numberMatchesLinks.size(); i = i + 8) {
+            keyWords.add(numberMatchesLinks.get(i));
+
+
+        }
+
+
+        //String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
+        String linkRoot = numberMatchesLinks.get(8);
+
+        /*
+
+        for (String element: words) {
+            if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
+                Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
+                String channelsString = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                String keyMaster = null;
+                String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+                for (String key : dictionary.keySet()) {
+                    if (channelsString.contains(key)) {
+                        keyMaster = key;
+                    }
+                }
+                intent.putExtra("KEY_SENDER", linkRoot + dictionary.get(keyMaster) + ran);
+                startActivity(intent);
+
+            }
+        }
+
+         */
 
         for (String element: words) {
             if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
