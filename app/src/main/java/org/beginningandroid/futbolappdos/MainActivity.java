@@ -28,6 +28,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.nodes.Element;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
@@ -41,6 +42,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> arrayListAvatar;
 
     ArrayList<String> keyWords = new ArrayList<>();
+
+    ArrayList<String> numberMatchesLinks = new ArrayList<>();
+
+    ArrayList<String> listFutbolLinkMatchesUno = new ArrayList<>();
+
+    ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
 
     TextView textViewUno;
 
@@ -95,6 +102,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private void setUpMatchmodels() {
 
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
+
+
+        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+        listFutbolLinkMatchesUno.clear();
+        listFutbolLinkMatchesDos.clear();
+        for(String titulo : numberMatchesLinks) {
+            listFutbolLinkMatchesUno.add(titulo);
+        }
+        for( int i = 11; i < listFutbolLinkMatchesUno.size(); i = i +8) {
+            listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
+        }
         /*
         getDataFromAPI();
 
@@ -107,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         matchmodels.add(movieUno);
 
          */
+        MatchModel movieUn = new MatchModel(numberAgenda.get(0), numberMatchesLinks.get(11), numberMatchesLinks.get(11 + 8), listFutbolLinkMatchesDos.get(2));
+        matchmodels.add(movieUn);
 
         MatchModel movie = new MatchModel(numberList.get(0), numberList.get(1), numberList.get(2), numberList.get(3));
         matchmodels.add(movie);
@@ -117,6 +139,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
         }
+        for (int i = 11; i < numberMatchesLinks.size(); i = i +8){
+            keyWords.add(numberMatchesLinks.get(i));
+        }
+        /*
+
+        for (int i = 11; i < numberMatchesLinks.size(); i = i + 8) {
+            keyWords.add(numberMatchesLinks.get(i));
+        }
+        textViewUno.setText(keyWords.size());
+
+         */
     }
 
     @Override
