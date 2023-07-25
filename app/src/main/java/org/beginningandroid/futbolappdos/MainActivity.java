@@ -17,13 +17,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.*;
 
+/*
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+
+ */
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> numberTitle;
     private ProgressBar loadingPB;
 
-     ArrayList<String> arrayListName;
-     ArrayList<String> arrayListLastName;
+    ArrayList<String> arrayListName;
+    ArrayList<String> arrayListLastName;
     ArrayList<String> arrayListEmail;
     ArrayList<String> arrayListAvatar;
 
@@ -60,12 +64,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         RecyclerView recyclerView = findViewById(R.id.mRecyclerView);
 
+        /*
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
         ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
         ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
         ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
 
+
+         */
 
         setUpMatchmodels();
 
@@ -77,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         //setTextViewUno ();
 
 
-
     }
 
+        /*
     private void setTextViewUno (){
 
         ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
@@ -95,13 +102,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         }
 
-         */
+
         textViewUno.setText(keyWords.size());
     }
+    */
+
 
     private void setUpMatchmodels() {
 
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
+        ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
 
         ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
@@ -109,10 +119,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         listFutbolLinkMatchesUno.clear();
         listFutbolLinkMatchesDos.clear();
-        for(String titulo : numberMatchesLinks) {
+        for (String titulo : numberMatchesLinks) {
             listFutbolLinkMatchesUno.add(titulo);
         }
-        for( int i = 11; i < listFutbolLinkMatchesUno.size(); i = i +8) {
+        for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
             listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
         }
         /*
@@ -139,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
         }
-        for (int i = 11; i < numberMatchesLinks.size(); i = i +8){
+        for (int i = 11; i < numberMatchesLinks.size(); i = i + 8) {
             keyWords.add(numberMatchesLinks.get(i));
         }
 
@@ -155,6 +165,33 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         textViewUno.setText(keyWords.size());
 
          */
+    }
+    // Linear-search function to find the index of an element
+    public static int findIndex(int arr[], int t)
+    {
+
+        // if array is Null
+        if (arr == null) {
+            return -1;
+        }
+
+        // find length of array
+        int len = arr.length;
+        int i = 0;
+
+        // traverse in the array
+        while (i < len) {
+
+            // if the i-th element is t
+            // then return the index
+            if (arr[i] == t) {
+                return i;
+            }
+            else {
+                i = i + 1;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -185,10 +222,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         listFutbolLinkMatchesUno.clear();
         listFutbolLinkMatchesDos.clear();
-        for(String titulo : numberMatchesLinks) {
-            listFutbolLinkMatchesUno.add(titulo);
+        for (String titulo : numberMatchesLinks) {
+            listFutbolLinkMatchesUno.add(titulo.toLowerCase(Locale.ROOT));
         }
-        for( int i = 11; i < listFutbolLinkMatchesUno.size(); i = i +8) {
+        for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
             listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
         }
 
@@ -198,19 +235,48 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             strWords[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
         }
 
-        String k[] = listFutbolLinkMatchesDos.toArray(new String[listFutbolLinkMatchesDos.size()]);
+        String[] strWordsMatchesUno = new String[listFutbolLinkMatchesUno.size()];
+
+        for (int i = 0; i < listFutbolLinkMatchesUno.size(); i++) {
+            strWordsMatchesUno[i] = listFutbolLinkMatchesUno.get(i).toLowerCase();
+        }
 
 
-        /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
-        String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn", "directv 610"};
-        Map<String, Integer> dictionary = new HashMap<String, Integer>();
-        dictionary.put("win sports +", 1251);
-        dictionary.put("dsports", 1071);
-        dictionary.put("espn 2", 1100);
-        dictionary.put("tyc sports", 1240);
-        dictionary.put("goltv", 1134);
-        dictionary.put("espn", 1107);
-        dictionary.put("directv 610", 1057);
+
+        ///String k[] = listFutbolLinkMatchesDos.toArray(new String[listFutbolLinkMatchesDos.size()]);
+
+        ArrayList<String> channelKeys;
+        for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
+            listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
+        }
+        /*
+        String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+        String keyMasterUno = null;
+
+        for (String keyWord : strWords) {
+            if (channelsStringUno.contains(keyWord)) {
+                keyMasterUno = keyWord;
+            }
+
+         */
+
+
+            /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
+            String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn", "directv 610"};
+            Map<String, Integer> dictionary = new HashMap<String, Integer>();
+            dictionary.put("win sports +", 1251);
+            dictionary.put("dsports", 1071);
+            dictionary.put("espn 2", 1100);
+            dictionary.put("tyc sports", 1240);
+            dictionary.put("goltv", 1134);
+            dictionary.put("espn", 1107);
+            dictionary.put("directv 610", 1057);
+
+            Map<String, String> dictionaryChannels = new HashMap<String, String>();
+            ///for (String element : strWords){
+        for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
+                dictionaryChannels.put(listFutbolLinkMatchesUno.get(i), listFutbolLinkMatchesUno.get(i-1));
+            }
 
         /*
 
@@ -241,11 +307,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }
 
          */
-        //textViewUno.setText(keyWords.toString());
+            //textViewUno.setText(keyWords.toString());
 
 
-        //String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
-        String linkRoot = numberMatchesLinks.get(8);
+            //String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
+            String linkRoot = numberMatchesLinks.get(8);
 
         /*
 
@@ -270,25 +336,47 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
          */
 
-        for (String element: strWords) {
-            if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
-                Intent intent = new Intent(MainActivity.this, VideoActivity.class);
-                //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
-                //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
-                String channelsString = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
-                String keyMaster = null;
-                String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
-                for (String key : dictionary.keySet()) {
-                    if (channelsString.contains(key)) {
-                        keyMaster = key;
-                    }
-                }
-                intent.putExtra("KEY_SENDER", linkRoot + dictionary.get(keyMaster) + ran);
-                startActivity(intent);
+            for (String element : strWords) {
+                if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
+                    Intent intent = new Intent(MainActivity.this, VideoActivity.class);
+                    //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                    //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
+                    String channelsString = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                    String keyMaster = null;
+                    String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+                    /*
+                    String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                    String keyMasterUno = null;
 
+                    for (String keyWord : strWords) {
+                        if (channelsStringUno.contains(keyWord)) {
+                            keyMasterUno = keyWord;
+                        }
+
+                     */
+
+                    for (String key : dictionaryChannels.keySet()) {
+                        if (channelsString.contains(key)) {
+                            keyMaster = key;
+                        }
+                    }
+
+
+
+                    intent.putExtra("KEY_SENDER", linkRoot + dictionaryChannels.get(keyMaster) + ran);
+                    startActivity(intent);
+
+                     /*
+                    //String channelName = listFutbolLinkMatchesUno.get()
+                    int index = listFutbolLinkMatchesUno.indexOf(keyMasterUno);
+                    intent.putExtra("KEY_SENDER", linkRoot + strWordsMatchesUno[index -1]+ ran);
+                    startActivity(intent);
+
+                }
+
+                      */
             }
         }
-    }
     /*
     private void getDataFromAPI() {
 
@@ -345,4 +433,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
      */
+
+    }
+    /*
+    public static int getIndexOf(String[] strings, String item) {
+        for (int i = 0; i < strings.length; i++) {
+            if (item.equals(strings[i])) return i;
+        }
+        return -1;
+    }
+
+     */
+
 }
