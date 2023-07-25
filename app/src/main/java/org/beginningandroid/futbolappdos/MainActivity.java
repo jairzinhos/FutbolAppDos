@@ -142,6 +142,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         for (int i = 11; i < numberMatchesLinks.size(); i = i +8){
             keyWords.add(numberMatchesLinks.get(i));
         }
+
+
+
+
+
         /*
 
         for (int i = 11; i < numberMatchesLinks.size(); i = i + 8) {
@@ -172,6 +177,28 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         /// https://docs.google.com/spreadsheets/d/e/2PACX-1vQmtmvyVhA_nZ4mRYOMPyXs2-jyHozuogbeURAAQ5Hfa0ITOJ9TPAnpBjpCiYG7bp83l8rmWmeejt1g/pubhtml
         /// json link https://spreadsheets.google.com/feeds/list/158x_7C-U19e9R4EuYL4tTUSBatelIJ2WPhzCdKrM_Qg/od6/public/values?alt=json
 
+        /// Creating Array lists to connect directly to DB
+        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+
+        //ArrayList<String> keyWords = new ArrayList<>();
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+        listFutbolLinkMatchesUno.clear();
+        listFutbolLinkMatchesDos.clear();
+        for(String titulo : numberMatchesLinks) {
+            listFutbolLinkMatchesUno.add(titulo);
+        }
+        for( int i = 11; i < listFutbolLinkMatchesUno.size(); i = i +8) {
+            listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
+        }
+
+        String[] strWords = new String[listFutbolLinkMatchesDos.size()];
+
+        for (int i = 0; i < listFutbolLinkMatchesDos.size(); i++) {
+            strWords[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
+        }
+
+        String k[] = listFutbolLinkMatchesDos.toArray(new String[listFutbolLinkMatchesDos.size()]);
 
 
         /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
@@ -185,12 +212,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         dictionary.put("espn", 1107);
         dictionary.put("directv 610", 1057);
 
+        /*
+
         /// Creating Array lists to connect directly to DB
         ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
-        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
-
 
         //ArrayList<String> keyWords = new ArrayList<>();
+        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+        listFutbolLinkMatchesUno.clear();
+        listFutbolLinkMatchesDos.clear();
+        for(String titulo : numberMatchesLinks) {
+            listFutbolLinkMatchesUno.add(titulo);
+        }
+        for( int i = 11; i < listFutbolLinkMatchesUno.size(); i = i +8) {
+            listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
+        }
+
+         */
         /*
         keyWords.clear();
 
@@ -231,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
          */
 
-        for (String element: words) {
+        for (String element: strWords) {
             if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
                 Intent intent = new Intent(MainActivity.this, VideoActivity.class);
                 //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
