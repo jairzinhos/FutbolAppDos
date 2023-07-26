@@ -1,6 +1,6 @@
 package org.beginningandroid.futbolappdos;
 
-import static java.lang.Character.toLowerCase;
+///import static java.lang.Character.toLowerCase;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+///import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+///import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.*;
+///import java.util.*;
 
 /*
 import com.android.volley.Request;
@@ -27,15 +27,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
- */
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
+*/
+
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
+
+    /*
     ArrayList<String> numberList;
     ArrayList<String> numberTitle;
     private ProgressBar loadingPB;
@@ -45,15 +49,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> arrayListEmail;
     ArrayList<String> arrayListAvatar;
 
+     */
+
+
+
     ArrayList<String> keyWords = new ArrayList<>();
 
-    ArrayList<String> numberMatchesLinks = new ArrayList<>();
+    ///ArrayList<String> numberMatchesLinks = new ArrayList<>();
 
     ArrayList<String> listFutbolLinkMatchesUno = new ArrayList<>();
 
     ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
 
-    TextView textViewUno;
+    ////TextView textViewUno;
 
 
     @Override
@@ -167,6 +175,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
          */
     }
     // Linear-search function to find the index of an element
+
+    /*
+
+
     public static int findIndex(int arr[], int t)
     {
 
@@ -193,6 +205,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }
         return -1;
     }
+
+     */
+
+
 
     @Override
     public void onItemClick(int position) {
@@ -262,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
             /// https://www.geeksforgeeks.org/how-to-read-data-from-google-spreadsheet-in-android/  wEBSITE TUTORIAL
+            /*
             String[] words = {"word1", "win sports +", "dsports", "word4", "word5", "espn 2", "tyc sports", "goltv", "espn", "directv 610"};
             Map<String, Integer> dictionary = new HashMap<String, Integer>();
             dictionary.put("win sports +", 1251);
@@ -272,9 +289,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             dictionary.put("espn", 1107);
             dictionary.put("directv 610", 1057);
 
+             */
+
             Map<String, String> dictionaryChannels = new HashMap<String, String>();
             ///for (String element : strWords){
-        for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
+            for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
                 dictionaryChannels.put(listFutbolLinkMatchesUno.get(i), listFutbolLinkMatchesUno.get(i-1));
             }
 
