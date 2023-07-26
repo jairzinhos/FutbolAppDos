@@ -2,6 +2,7 @@ package org.beginningandroid.futbolappdos;
 
 ///import static java.lang.Character.toLowerCase;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +12,16 @@ import android.os.Bundle;
 ///import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 ///import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,16 +71,45 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
 
-    ////TextView textViewUno;
+    // creating a variable for
+    // our Firebase Database.
+    FirebaseDatabase firebaseDatabase;
+
+    // creating a variable for our
+    // Database Reference for Firebase.
+    DatabaseReference databaseReference;
+
+    TextView textViewUno;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView textViewUnoD = findViewById(R.id.textViewUno);
+
+
+
+
+
+
 
         RecyclerView recyclerView = findViewById(R.id.mRecyclerView);
+
+        // below line is used to get the instance
+        // of our Firebase database.
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        // below line is used to get
+        // reference for our database.
+        databaseReference = firebaseDatabase.getReference("channelsDB");
+
+        // initializing our object class variable.
+        textViewUno = findViewById(R.id.textViewUno);
+
+
+        // calling method
+        // for getting data.
+        getdata();
 
         /*
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
@@ -207,6 +246,35 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
      */
+    private void getdata() {
+
+        // calling add value event listener method
+        // for getting the values from database.
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // this method is call to get the realtime
+                // updates in the data.
+                // this method is called when the data is
+                // changed in our Firebase console.
+                // below line is for getting the data from
+                // snapshot of our database.
+                String value = snapshot.getValue(String.class);
+
+                // after getting the value we are setting
+                // our value to our text view in below line.
+               textViewUno.setText(value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // calling on cancelled method when we receive
+                // any error or we are not able to get the data.
+                Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 
 
