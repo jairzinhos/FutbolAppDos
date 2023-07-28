@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
 
-                    String nombre = snapshot.child("1").getValue().toString();
-                    textViewUno.setText(nombre);
+                    String buu = snapshot.child("1").getValue().toString();
+                    textViewUno.setText(buu);
 
                 }
             }
