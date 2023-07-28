@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 ///import android.view.View;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SplittableRandom;
 ///import java.util.*;
 
 /*
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     // creating a variable for
     // our Firebase Database.
-    FirebaseDatabase firebaseDatabase;
+    //FirebaseDatabase firebaseDatabase;
 
     // creating a variable for our
     // Database Reference for Firebase.
@@ -86,6 +88,33 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // initializing our object class variable.
+        textViewUno = findViewById(R.id.textViewUno);
+
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("channelsDB");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (snapshot.exists()) {
+
+
+
+                    String nombre = snapshot.child("1").getValue().toString();
+                    textViewUno.setText(nombre);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
 
 
 
@@ -97,19 +126,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         // below line is used to get the instance
         // of our Firebase database.
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        ///firebaseDatabase = FirebaseDatabase.getInstance();
 
         // below line is used to get
         // reference for our database.
-        databaseReference = firebaseDatabase.getReference("channelsDB");
+        ///databaseReference = firebaseDatabase.getReference();
 
         // initializing our object class variable.
-        textViewUno = findViewById(R.id.textViewUno);
+        ///textViewUno = findViewById(R.id.textViewUno);
 
 
         // calling method
         // for getting data.
-        getdata();
+        //getdata();
 
         /*
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
@@ -250,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         // calling add value event listener method
         // for getting the values from database.
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.child("channelsDB").child("1").addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -260,11 +289,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 // changed in our Firebase console.
                 // below line is for getting the data from
                 // snapshot of our database.
-                String value = snapshot.getValue(String.class);
+                if (snapshot.exists()) {
+                    String numero = snapshot.child("number").getValue().toString();
+                    textViewUno.setText("El número del canal es: " + numero);
+                }
+                ///String value = snapshot.getValue(String.class);
 
                 // after getting the value we are setting
                 // our value to our text view in below line.
-               textViewUno.setText(value);
+                //textViewUno.setText("El número del canal es: " + numero);
+                //textViewUno.setText("holi");
+
             }
 
             @Override
