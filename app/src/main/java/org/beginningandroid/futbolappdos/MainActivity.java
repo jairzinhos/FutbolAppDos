@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     // Database Reference for Firebase.
     DatabaseReference databaseReference;
 
-    TextView textViewUno;
+    private TextView textViewUno;
 
 
     @Override
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         // below line is used to get
         // reference for our database.
-        databaseReference = firebaseDatabase.getReference("channelsDB");
+        databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB").child("1").child("nombre");
 
         // initializing our object class variable.
         textViewUno = findViewById(R.id.textViewUno);
