@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 ///import android.view.View;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         // below line is used to get
         // reference for our database.
-        databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB").child("1").child("nombre");
+        databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
 
         // initializing our object class variable.
         textViewUno = findViewById(R.id.textViewUno);
@@ -248,23 +249,42 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
      */
     private void getdata() {
 
+        ArrayList<String> snapWordsNames = new ArrayList<>();
+
         // calling add value event listener method
         // for getting the values from database.
         databaseReference.addValueEventListener(new ValueEventListener() {
 
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // this method is call to get the realtime
                 // updates in the data.
                 // this method is called when the data is
                 // changed in our Firebase console.
                 // below line is for getting the data from
                 // snapshot of our database.
-                String value = snapshot.getValue(String.class);
+                snapWordsNames.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    //ArrayList<String> snapWordsNames = new ArrayList<>();
+                    String value = snapshot.child("nombre").getValue().toString();
+                    Log.i("Our value", value);
+                    snapWordsNames.add(value);
+
+                }
+
+
+
+
+
+
+
+                    //strWordsnapshop[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
+
+                //String value = dataSnapshot.getValue(String.class);
 
                 // after getting the value we are setting
                 // our value to our text view in below line.
-               textViewUno.setText(value);
+               textViewUno.setText(snapWordsNames.get(1));
             }
 
             @Override
