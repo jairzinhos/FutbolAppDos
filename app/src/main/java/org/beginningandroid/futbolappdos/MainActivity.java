@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
 
+    ArrayList<String> snapWordsSites = new ArrayList<>();
+    ArrayList<String> snapWordsNames = new ArrayList<>();
+
     // creating a variable for
     // our Firebase Database.
     FirebaseDatabase firebaseDatabase;
@@ -89,28 +92,77 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         setContentView(R.layout.activity_main);
 
 
-
-
-
-
-
         RecyclerView recyclerView = findViewById(R.id.mRecyclerView);
 
         // below line is used to get the instance
         // of our Firebase database.
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        /////firebaseDatabase = FirebaseDatabase.getInstance();
 
         // below line is used to get
         // reference for our database.
-        databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
+        /////databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
 
         // initializing our object class variable.
         textViewUno = findViewById(R.id.textViewUno);
 
+        /*
+
+        ///
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // this method is call to get the realtime
+                // updates in the data.
+                // this method is called when the data is
+                // changed in our Firebase console.
+                // below line is for getting the data from
+                // snapshot of our database.
+                snapWordsNames.clear();
+                snapWordsSites.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    //ArrayList<String> snapWordsNames = new ArrayList<>();
+                    String value = snapshot.child("nombre").getValue().toString();
+                    Log.i("Our value", value);
+                    snapWordsNames.add(value);
+                }
+                for (DataSnapshot snapshotUno : dataSnapshot.getChildren()){
+                    String value = snapshotUno.child("site").getValue().toString();
+                    Log.i("Our value", value);
+                    snapWordsSites.add(value);
+
+                }
+
+
+
+
+
+
+
+                //strWordsnapshop[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
+
+                //String value = dataSnapshot.getValue(String.class);
+
+                // after getting the value we are setting
+                // our value to our text view in below line.
+                textViewUno.setText(snapWordsSites.get(1));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // calling on cancelled method when we receive
+                // any error or we are not able to get the data.
+                Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+         */
+
 
         // calling method
         // for getting data.
-        getdata();
+
+        //getdata();
 
         /*
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
@@ -121,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
          */
-
+        getDataUno();
         setUpMatchmodels();
 
         Match_RecyclerViewAdapter adapter = new Match_RecyclerViewAdapter(this, matchmodels, this);
@@ -154,7 +206,69 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         textViewUno.setText(keyWords.size());
     }
     */
+        public void getDataUno(){
+            // of our Firebase database.
+            firebaseDatabase = FirebaseDatabase.getInstance();
 
+            // below line is used to get
+            // reference for our database.
+            databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
+
+            // initializing our object class variable.
+            //textViewUno = findViewById(R.id.textViewUno);
+
+            ///
+            databaseReference.addValueEventListener(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // this method is call to get the realtime
+                    // updates in the data.
+                    // this method is called when the data is
+                    // changed in our Firebase console.
+                    // below line is for getting the data from
+                    // snapshot of our database.
+                    snapWordsNames.clear();
+                    snapWordsSites.clear();
+                    for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        //ArrayList<String> snapWordsNames = new ArrayList<>();
+                        String value = snapshot.child("nombre").getValue().toString();
+                        Log.i("Our value", value);
+                        snapWordsNames.add(value);
+                    }
+                    for (DataSnapshot snapshotUno : dataSnapshot.getChildren()){
+                        String value = snapshotUno.child("site").getValue().toString();
+                        Log.i("Our value", value);
+                        snapWordsSites.add(value);
+
+                    }
+
+
+
+
+
+
+
+                    //strWordsnapshop[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
+
+                    //String value = dataSnapshot.getValue(String.class);
+
+                    // after getting the value we are setting
+                    // our value to our text view in below line.
+                    textViewUno.setText(snapWordsSites.get(1));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // calling on cancelled method when we receive
+                    // any error or we are not able to get the data.
+                    Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
+        }
 
     private void setUpMatchmodels() {
 
@@ -162,9 +276,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
 
-        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
-        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+        ///ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+        ///ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
 
+        /*
         listFutbolLinkMatchesUno.clear();
         listFutbolLinkMatchesDos.clear();
         for (String titulo : numberMatchesLinks) {
@@ -173,6 +288,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
             listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
         }
+
+         */
         /*
         getDataFromAPI();
 
@@ -185,8 +302,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         matchmodels.add(movieUno);
 
          */
+        /*
         MatchModel movieUn = new MatchModel(numberAgenda.get(0), numberMatchesLinks.get(11), numberMatchesLinks.get(11 + 8), listFutbolLinkMatchesDos.get(2));
         matchmodels.add(movieUn);
+
+         */
 
         MatchModel movie = new MatchModel(numberList.get(0), numberList.get(1), numberList.get(2), numberList.get(3));
         matchmodels.add(movie);
@@ -197,9 +317,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
         }
+        /*
         for (int i = 11; i < numberMatchesLinks.size(); i = i + 8) {
             keyWords.add(numberMatchesLinks.get(i));
         }
+
+         */
 
 
 
@@ -249,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
      */
     private void getdata() {
 
-        ArrayList<String> snapWordsNames = new ArrayList<>();
+        //ArrayList<String> snapWordsNames = new ArrayList<>();
 
         // calling add value event listener method
         // for getting the values from database.
@@ -264,11 +387,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 // below line is for getting the data from
                 // snapshot of our database.
                 snapWordsNames.clear();
+                snapWordsSites.clear();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     //ArrayList<String> snapWordsNames = new ArrayList<>();
                     String value = snapshot.child("nombre").getValue().toString();
                     Log.i("Our value", value);
                     snapWordsNames.add(value);
+                }
+                for (DataSnapshot snapshotUno : dataSnapshot.getChildren()){
+                    String value = snapshotUno.child("site").getValue().toString();
+                    Log.i("Our value", value);
+                    snapWordsSites.add(value);
 
                 }
 
@@ -284,7 +413,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                 // after getting the value we are setting
                 // our value to our text view in below line.
-               textViewUno.setText(snapWordsNames.get(1));
+               textViewUno.setText(snapWordsSites.get(1));
             }
 
             @Override
@@ -295,6 +424,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
     }
+
+
+
 
 
 
@@ -319,10 +451,78 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         /// json link https://spreadsheets.google.com/feeds/list/158x_7C-U19e9R4EuYL4tTUSBatelIJ2WPhzCdKrM_Qg/od6/public/values?alt=json
 
         /// Creating Array lists to connect directly to DB
+        /*
         ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
 
         //ArrayList<String> keyWords = new ArrayList<>();
         ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+        */
+        //ArrayList<String> snapWordsSite = new ArrayList<>();
+        //ArrayList<String> snapWordsName = new ArrayList<>();
+
+        // calling add value event listener method
+        // for getting the values from database.
+        /*
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        // below line is used to get
+        // reference for our database.
+        databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // this method is call to get the realtime
+                // updates in the data.
+                // this method is called when the data is
+                // changed in our Firebase console.
+                // below line is for getting the data from
+                // snapshot of our database.
+                snapWordsSite.clear();
+                snapWordsName.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    //ArrayList<String> snapWordsNames = new ArrayList<>();
+                    String valueSite = snapshot.child("site").getValue().toString();
+                    Log.i("Our value ", valueSite);
+                    snapWordsSite.add(valueSite);
+                for (DataSnapshot snapshotUno : dataSnapshot.getChildren()) {
+
+                    String valueNombre = snapshotUno.child("nombre").getValue().toString();
+                    Log.i("Our value ", valueNombre);
+                    snapWordsName.add(valueNombre);
+                }
+
+
+
+                }
+
+
+
+
+
+
+
+                //strWordsnapshop[i] = listFutbolLinkMatchesDos.get(i).toLowerCase();
+
+                //String value = dataSnapshot.getValue(String.class);
+
+                // after getting the value we are setting
+                // our value to our text view in below line.
+                textViewUno.setText(snapWordsName.get(1));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // calling on cancelled method when we receive
+                // any error or we are not able to get the data.
+                Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+         */
+
+        /*
 
         listFutbolLinkMatchesUno.clear();
         listFutbolLinkMatchesDos.clear();
@@ -345,14 +545,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             strWordsMatchesUno[i] = listFutbolLinkMatchesUno.get(i).toLowerCase();
         }
 
+         */
+
 
 
         ///String k[] = listFutbolLinkMatchesDos.toArray(new String[listFutbolLinkMatchesDos.size()]);
+        /*
 
         ArrayList<String> channelKeys;
         for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
             listFutbolLinkMatchesDos.add(listFutbolLinkMatchesUno.get(i));
         }
+
+         */
         /*
         String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
         String keyMasterUno = null;
@@ -378,12 +583,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             dictionary.put("directv 610", 1057);
 
              */
-
+            /*
             Map<String, String> dictionaryChannels = new HashMap<String, String>();
             ///for (String element : strWords){
             for (int i = 11; i < listFutbolLinkMatchesUno.size(); i = i + 8) {
                 dictionaryChannels.put(listFutbolLinkMatchesUno.get(i), listFutbolLinkMatchesUno.get(i-1));
             }
+
+             */
+
+            Map<String, String> dictionaryChannelsFirebase = new HashMap<String, String>();
+            ///for (String element : strWords){
+            for (int i = 0; i < snapWordsSites.size(); i++) {
+            dictionaryChannelsFirebase.put(snapWordsNames.get(i).toLowerCase(Locale.ROOT), snapWordsSites.get(i));
+            }
+            String[] strWordsFirebase = new String[snapWordsNames.size()];
+
+            for (int i = 0; i < snapWordsNames.size(); i++) {
+            strWordsFirebase[i] = snapWordsNames.get(i).toLowerCase();
+            }
+
 
         /*
 
@@ -418,7 +637,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
             //String linkRoot = "https://arenacdmexico.com/canales/dtv2b.html?id=";
-            String linkRoot = numberMatchesLinks.get(8);
+            ///String linkRoot = numberMatchesLinks.get(8);
 
         /*
 
@@ -442,8 +661,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }
 
          */
-
-            for (String element : strWords) {
+            //for (String element : strWords)
+            for (String element : strWordsFirebase) {
                 if (matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT).contains(element)) {
                     Intent intent = new Intent(MainActivity.this, VideoActivity.class);
                     //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
@@ -462,7 +681,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                      */
 
-                    for (String key : dictionaryChannels.keySet()) {
+                    for (String key : dictionaryChannelsFirebase.keySet()) {
                         if (channelsString.contains(key)) {
                             keyMaster = key;
                         }
@@ -470,7 +689,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
 
-                    intent.putExtra("KEY_SENDER", linkRoot + dictionaryChannels.get(keyMaster) + ran);
+                    intent.putExtra("KEY_SENDER", dictionaryChannelsFirebase.get(keyMaster) + ran);
                     startActivity(intent);
 
                      /*
