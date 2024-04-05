@@ -212,8 +212,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
             // below line is used to get
             // reference for our database.
-            databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
 
+            databaseReference = firebaseDatabase.getReference("links");
+            //databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
             // initializing our object class variable.
             //textViewUno = findViewById(R.id.textViewUno);
 
@@ -689,7 +690,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
 
-                    intent.putExtra("KEY_SENDER", dictionaryChannelsFirebase.get(keyMaster) + ran);
+                    intent.putExtra("KEY_SENDER", dictionaryChannelsFirebase.get(keyMaster));
                     startActivity(intent);
 
                      /*

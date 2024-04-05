@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -19,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VideoActivity extends AppCompatActivity {
     // on below line creating a variable for web view.
@@ -28,6 +31,10 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Ad Blocker settings
+        AdBlocker.init(this);
+
         //// Setting Full screen from Futbolero plus App.
 
         requestWindowFeature(1);
@@ -146,6 +153,32 @@ public class VideoActivity extends AppCompatActivity {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
         }
+
+        //Blocker settings
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+
+        private Map<String, Boolean> loadedUrls = new HashMap<>();
+        @Nullable
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest (WebView view, String url){
+                boolean ad;
+                if (!loadedUrls.containsKey(url)) {
+                    ad = AdBlocker.isAd(url);
+                    loadedUrls.put(url, ad);
+                } else {
+                    ad = loadedUrls.get(url);
+                }
+                return ad ? AdBlocker.createEmptyResource() :
+                        super.shouldInterceptRequest(view, url);
+            }
+
+
+        //
 
         @Override
         public void onPageFinished(WebView view, String url) {

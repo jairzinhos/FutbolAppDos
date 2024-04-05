@@ -3,6 +3,7 @@ package org.beginningandroid.futbolappdos;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,11 +18,22 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.LikeView;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.model.ShareLinkContent;
+//import com.facebook.share.widget.EmbedPostView;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class IntroActivity extends AppCompatActivity {
     Button button;
     TextView text3;
     int x = 5;
     int y = 6;
+
+
     ///List<String> listFutbolHeaders1;
     ArrayList<String> listFutbolHeaders = new ArrayList<>();
     ArrayList<String> listFutbolHeaders1 = new ArrayList<>();
@@ -42,12 +54,16 @@ public class IntroActivity extends AppCompatActivity {
     String title;
     String singleText;
 
+    //private EmbedPostView embedPostView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         text3 = findViewById(R.id.textView);
         button = findViewById(R.id.button);
+
+        Util.keyHashes(this);
 
         getHtmlFromWeb();
 
@@ -61,6 +77,23 @@ public class IntroActivity extends AppCompatActivity {
                 goToMainActivity();
             }
         });
+        //Initializing the Facebook SDK
+        //FacebookSdk.sdkInitialize(getApplicationContext());
+        //AppEventsLogger.activateApp(this);
+
+        // Initialize EmbedPostView
+        //embedPostView = findViewById(R.id.embedPostView);
+
+        // Load Facebook post URL
+        //String postUrl = "https://www.facebook.com/Juezcentral/posts/pfbid034XmncYbLXEJjQviHqPUT7Mip9pYoMpfWd9DXPxAFDfx2bucma3GTQp2bz9MwsmhMl";
+        //ShareLinkContent content = new ShareLinkContent.Builder()
+                //.setContentUrl(Uri.parse(postUrl))
+                //.build();
+
+        //embedPostView.setShareContent(content);
+
+
+
     }
     public void getHtmlFromWebUno() throws IOException {
         //Document doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
