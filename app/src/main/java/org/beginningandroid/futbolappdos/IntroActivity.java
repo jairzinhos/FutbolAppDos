@@ -2,12 +2,15 @@ package org.beginningandroid.futbolappdos;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -28,6 +31,9 @@ import com.facebook.share.model.ShareLinkContent;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class IntroActivity extends AppCompatActivity {
+
+    Context context;
+
     Button button;
     TextView text3;
     int x = 5;
@@ -63,6 +69,14 @@ public class IntroActivity extends AppCompatActivity {
         text3 = findViewById(R.id.textView);
         button = findViewById(R.id.button);
 
+        if (!isConnected()){
+            Toast.makeText(IntroActivity.this, " No Internet Access", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(IntroActivity.this, " Welcome to our App", Toast.LENGTH_SHORT).show();
+
+        }
+
         Util.keyHashes(this);
 
         getHtmlFromWeb();
@@ -95,6 +109,12 @@ public class IntroActivity extends AppCompatActivity {
 
 
     }
+    private boolean isConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
+
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnectedOrConnecting();
+    }
+
     public void getHtmlFromWebUno() throws IOException {
         //Document doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
         Document doc = null;

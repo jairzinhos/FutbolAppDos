@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> listFutbolLinkMatchesUno = new ArrayList<>();
 
     ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
+    //ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
     ArrayList<String> snapWordsSites = new ArrayList<>();
     ArrayList<String> snapWordsNames = new ArrayList<>();
@@ -207,6 +208,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
     */
         public void getDataUno(){
+            //Retrieving Data from IntroActivity
+            ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
+            ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
             // of our Firebase database.
             firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -256,7 +260,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                     // after getting the value we are setting
                     // our value to our text view in below line.
-                    textViewUno.setText(snapWordsSites.get(1));
+                    //textViewUno.setText(snapWordsSites.get(1) + numberTitle.get(0));
+                    textViewUno.setText(numberTitle.get(0));
+                    Log.d("Fecha", "Este es la fecha: " + numberTitle.get(0));
+                    Log.d("Link", "Este es la fecha: " + snapWordsSites.get(1));
                 }
 
                 @Override
@@ -308,9 +315,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         matchmodels.add(movieUn);
 
          */
-
+        MatchModel events = new MatchModel("Eventos y Canales", " ", "Clic y deslizar para ver canales", "Star +");
+        matchmodels.add(events);
+        /*
         MatchModel movie = new MatchModel(numberList.get(0), numberList.get(1), numberList.get(2), numberList.get(3));
         matchmodels.add(movie);
+
+         */
 
         for (int i = 0; i < numberList.size(); i = i + 4) {
             MatchModel matchU = new MatchModel(numberList.get(i), numberList.get(i + 1), numberList.get(i + 2), numberList.get(i + 3));
