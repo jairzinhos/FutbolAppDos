@@ -324,10 +324,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
          */
 
         for (int i = 0; i < numberList.size(); i = i + 4) {
-            MatchModel matchU = new MatchModel(numberList.get(i), numberList.get(i + 1), numberList.get(i + 2), numberList.get(i + 3));
-            matchmodels.add(matchU);
+            if (numberList.get(i + 3).equalsIgnoreCase("Disney+")) {
+                MatchModel matchU = new MatchModel(numberList.get(i), numberList.get(i + 1), numberList.get(i + 2), numberList.get(i + 3) + " " + ((i / 4)+1));
+                matchmodels.add(matchU);
 
 
+            } else {
+                MatchModel matchU = new MatchModel(numberList.get(i), numberList.get(i + 1), numberList.get(i + 2), numberList.get(i + 3));
+                matchmodels.add(matchU);
+            }
         }
         /*
         for (int i = 11; i < numberMatchesLinks.size(); i = i + 8) {
@@ -348,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         textViewUno.setText(keyWords.size());
 
          */
-    }
+        }
     // Linear-search function to find the index of an element
 
     /*
