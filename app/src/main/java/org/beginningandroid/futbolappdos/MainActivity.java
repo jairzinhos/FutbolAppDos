@@ -7,10 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 ///import android.view.View;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,11 +91,166 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     private TextView textViewUno;
 
+    boolean encontrado = false;
+
+    String textoIngresado;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        EditText etBuscar = findViewById(R.id.etBuscar);
+        Button btnBuscar = findViewById(R.id.buttonSearch);
+        TextView tvResultado = findViewById(R.id.tvResultado);
+        Button btnConnect = findViewById(R.id.buttonConnection);
+
+        getDataUno();
+
+        /*
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        // below line is used to get
+        // reference for our database.
+
+        databaseReference = firebaseDatabase.getReference("links");
+        //databaseReference = firebaseDatabase.getReference("1OQp3_7PnYHh2A49Mc3sNnRBbHGFO5nunGRSm8ke8Mps").child("channelsDB");
+        // initializing our object class variable.
+        //textViewUno = findViewById(R.id.textViewUno);
+
+        ///
+        databaseReference.addValueEventListener(new ValueEventListener() {
+
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        // this method is call to get the realtime
+                                                        // updates in the data.
+                                                        // this method is called when the data is
+                                                        // changed in our Firebase console.
+                                                        // below line is for getting the data from
+                                                        // snapshot of our database.
+                                                        snapWordsNames.clear();
+                                                        snapWordsSites.clear();
+                                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                            //ArrayList<String> snapWordsNames = new ArrayList<>();
+                                                            String value = snapshot.child("nombre").getValue().toString();
+                                                            Log.i("Our value", value);
+                                                            snapWordsNames.add(value);
+                                                        }
+                                                        for (DataSnapshot snapshotUno : dataSnapshot.getChildren()) {
+                                                            String value = snapshotUno.child("site").getValue().toString();
+                                                            Log.i("Our value", value);
+                                                            snapWordsSites.add(value);
+
+                                                        }
+                                                    }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+      */
+
+
+        ///String[] nombres = {"Juan", "Ana", "Carlos", "María", "Pedro"};
+
+        btnBuscar.setOnClickListener(v -> {
+            String textoIngresado = etBuscar.getText().toString(); // Obtener texto ingresado .trim()
+            String textoIngresadoUno = textoIngresado;
+            boolean encontrado = false;
+            /*
+            for (String nombre : nombres) {
+                if (nombre.equalsIgnoreCase(textoIngresado)) { // Comparación sin importar mayúsculas
+                    encontrado = true;
+                    break;
+                }
+            }
+
+             */
+
+            for (String nombre : snapWordsNames) {
+                if (nombre.equalsIgnoreCase(textoIngresadoUno)) { // Comparación sin importar mayúsculas
+                    encontrado = true;
+                    break;
+                }
+            }
+
+
+            if (encontrado) {
+                tvResultado.setText("✅ Nombre encontrado: " + textoIngresadoUno);
+                btnConnect.setText("Ver " + textoIngresadoUno);
+
+            } else {
+                tvResultado.setText("❌ Nombre no encontrado");
+                btnConnect.setText(textoIngresadoUno + " no hallado");
+            }
+            //
+            boolean finalEncontrado = encontrado;
+            btnConnect.setOnClickListener(w -> {
+
+                ///Creating a dictionary with data from Firebase (sites and names) called dictionaryChannelsFirebase
+                /// and then Create a string with only names and after change the set of strings to lower case
+                Map<String, String> dictionaryChannelsFirebase = new HashMap<String, String>();
+                ///for (String element : strWords){
+                for (int i = 0; i < snapWordsSites.size(); i++) {
+                    dictionaryChannelsFirebase.put(snapWordsNames.get(i).toLowerCase(Locale.ROOT), snapWordsSites.get(i));
+                }
+                String[] strWordsFirebase = new String[snapWordsNames.size()];
+
+                for (int i = 0; i < snapWordsNames.size(); i++) {
+                    strWordsFirebase[i] = snapWordsNames.get(i).toLowerCase();
+                }
+
+                //////Connecting btnConnect to Intent to VideoActivity
+                //for (String element : strWords)
+                //for (String element : strWordsFirebase) {
+
+                if (finalEncontrado) {
+                    Intent intentUno = new Intent(MainActivity.this, VideoActivity.class);
+                    //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                    //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
+                    String channelsString = textoIngresadoUno;
+                    String keyMaster = null;
+                    //String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+                    /*
+                    String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                    String keyMasterUno = null;
+
+                    for (String keyWord : strWords) {
+                        if (channelsStringUno.contains(keyWord)) {
+                            keyMasterUno = keyWord;
+                        }
+
+                     */
+
+
+
+                    for (String key : dictionaryChannelsFirebase.keySet()) {
+                        if (channelsString.contains(key)) {
+                            keyMaster = key;
+                        }
+                    }
+
+
+                    intentUno.putExtra("KEY_SENDER", dictionaryChannelsFirebase.get(keyMaster));
+                    startActivity(intentUno);
+
+
+                }
+
+
+                //////
+            });
+
+            //
+
+        });
+
+        ///btnConnect.setText(textoIngresado);
 
 
         RecyclerView recyclerView = findViewById(R.id.mRecyclerView);
@@ -174,8 +334,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
          */
-        getDataUno();
+        //getDataUno();
         setUpMatchmodels();
+
 
         Match_RecyclerViewAdapter adapter = new Match_RecyclerViewAdapter(this, matchmodels, this);
 
@@ -183,30 +344,97 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //setTextViewUno ();
+        //Action of btnConnect
+        /*
+        btnConnect.setOnClickListener(v -> {
+
+            ///Creating a dictionary with data from Firebase (sites and names) called dictionaryChannelsFirebase
+            /// and then Create a string with only names and after change the set of strings to lower case
+            Map<String, String> dictionaryChannelsFirebase = new HashMap<String, String>();
+            ///for (String element : strWords){
+            for (int i = 0; i < snapWordsSites.size(); i++) {
+                dictionaryChannelsFirebase.put(snapWordsNames.get(i).toLowerCase(Locale.ROOT), snapWordsSites.get(i));
+            }
+            String[] strWordsFirebase = new String[snapWordsNames.size()];
+
+            for (int i = 0; i < snapWordsNames.size(); i++) {
+                strWordsFirebase[i] = snapWordsNames.get(i).toLowerCase();
+            }
+
+            //////Connecting btnConnect to Intent to VideoActivity
+            //for (String element : strWords)
+            //for (String element : strWordsFirebase) {
+
+            if (encontrado) {
+                 Intent intentUno = new Intent(MainActivity.this, VideoActivity.class);
+                    //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
+                    //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
+                  String channelsString = textoIngresado;
+                  String keyMaster = null;
+                    //String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+
+                    String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
+                    String keyMasterUno = null;
+
+                    for (String keyWord : strWords) {
+                        if (channelsStringUno.contains(keyWord)) {
+                            keyMasterUno = keyWord;
+                        }
+
+
+
+
+
+                    for (String key : dictionaryChannelsFirebase.keySet()) {
+                        if (channelsString.contains(key)) {
+                            keyMaster = key;
+                        }
+                    }
+
+
+                    intentUno.putExtra("KEY_SENDER", dictionaryChannelsFirebase.get(keyMaster));
+                    startActivity(intentUno);
+
+
+                }
+
+
+        //////
+        });
+        */
+
+
 
 
     }
 
-        /*
-    private void setTextViewUno (){
-
-        ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
-        ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
-
-        //keyWords.clear();
-        /*
-
-        for (int i=11;i<numberMatchesLinks.size(); i = i + 8) {
-            keyWords.add(numberMatchesLinks.get(i));
 
 
 
+
+
+
+           /*
+        private void setTextViewUno (){
+
+            ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
+            ArrayList<String> numberMatchesLinks = (ArrayList<String>) getIntent().getSerializableExtra("matchesLinks");
+
+            //keyWords.clear();
+            /*
+
+            for (int i=11;i<numberMatchesLinks.size(); i = i + 8) {
+                keyWords.add(numberMatchesLinks.get(i));
+
+
+
+            }
+
+
+            textViewUno.setText(keyWords.size());
         }
+        */
 
-
-        textViewUno.setText(keyWords.size());
-    }
-    */
         public void getDataUno(){
             //Retrieving Data from IntroActivity
             ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
@@ -314,7 +542,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         MatchModel movieUn = new MatchModel(numberAgenda.get(0), numberMatchesLinks.get(11), numberMatchesLinks.get(11 + 8), listFutbolLinkMatchesDos.get(2));
         matchmodels.add(movieUn);
 
+
+
+
          */
+        /*
+        EditText etBuscar = findViewById(R.id.etBuscar);
+        Button btnBuscar = findViewById(R.id.btnBuscar);
+        TextView tvResultado = findViewById(R.id.tvResultado);
+
+        String[] nombres = {"Juan", "Ana", "Carlos", "María", "Pedro"};
+
+        btnBuscar.setOnClickListener(v -> {
+            String textoIngresado = etBuscar.getText().toString().trim(); // Obtener texto ingresado
+            boolean encontrado = false;
+
+            for (String nombre : nombres) {
+                if (nombre.equalsIgnoreCase(textoIngresado)) { // Comparación sin importar mayúsculas
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (encontrado) {
+                tvResultado.setText("✅ Nombre encontrado: " + textoIngresado);
+            } else {
+                tvResultado.setText("❌ Nombre no encontrado");
+            }
+        });
+
+
+        if (encontrado = true) {
+            MatchModel buscando = new MatchModel(" Este es resultado de la última búsqueda", " ", "Clic y deslizar para ver canal", textoIngresado);
+            matchmodels.add(buscando);
+
+        }
+        */
+
         MatchModel events = new MatchModel("Eventos y Canales", " ", "Clic y deslizar para ver canales", "Star +");
         matchmodels.add(events);
         /*
@@ -608,7 +872,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
 
              */
-
+                ///Creating a dictionary with data from Firebase (sites and names) called dictionaryChannelsFirebase
+                /// and then Create a string with only names and after change the set of strings to lower case
             Map<String, String> dictionaryChannelsFirebase = new HashMap<String, String>();
             ///for (String element : strWords){
             for (int i = 0; i < snapWordsSites.size(); i++) {
@@ -686,7 +951,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
                     String channelsString = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
                     String keyMaster = null;
-                    String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
+                    //String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
                     /*
                     String channelsStringUno = matchmodels.get(position).getChannel().toLowerCase(Locale.ROOT);
                     String keyMasterUno = null;
