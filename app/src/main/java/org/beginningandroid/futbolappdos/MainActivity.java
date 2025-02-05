@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
              */
 
             for (String nombre : snapWordsNames) {
-                if (nombre.equalsIgnoreCase(textoIngresadoUno)) { // Comparación sin importar mayúsculas
+                if (nombre.equalsIgnoreCase(textoIngresadoUno.trim())) { // Comparación sin importar mayúsculas
                     encontrado = true;
                     break;
                 }
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     Intent intentUno = new Intent(MainActivity.this, VideoActivity.class);
                     //intent.putExtra("KEY_SENDER", "https://arenacdmexico.com/canales/dtv2b.html?id=1251");
                     //intent.putExtra("KEY_SENDER", linkRoot + dictionary.get("win sports +"));
-                    String channelsString = textoIngresadoUno;
+                    String channelsString = textoIngresadoUno.toLowerCase(Locale.ROOT).trim();
                     String keyMaster = null;
                     //String ran = "&HyHkUrV675E4EfvYfGKHV&&ghhgREfgTrR&id=1242&id=234&hYhUHJyegh&id=1251MYGhjUuoYj&id=1181&ram=4765&mjUJ&m2001HTgj";
                     /*
