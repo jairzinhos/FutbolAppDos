@@ -7,22 +7,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
+//import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 ///import android.view.View;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebView;
+//import android.view.View;
+//import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+//import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 ///import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+//import com.google.android.gms.tasks.OnCompleteListener;
+//import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
 
-    ArrayList<String> keyWords = new ArrayList<>();
+    //ArrayList<String> keyWords = new ArrayList<>();
 
     ///ArrayList<String> numberMatchesLinks = new ArrayList<>();
 
-    ArrayList<String> listFutbolLinkMatchesUno = new ArrayList<>();
+    //ArrayList<String> listFutbolLinkMatchesUno = new ArrayList<>();
 
-    ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
+    //ArrayList<String> listFutbolLinkMatchesDos = new ArrayList<>();
     //ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
     ArrayList<String> snapWordsSites = new ArrayList<>();
@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     private TextView textViewUno;
 
-    boolean encontrado = false;
+    //boolean encontrado = false;
 
-    String textoIngresado;
+    //String textoIngresado;
 
 
     @Override
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         ///String[] nombres = {"Juan", "Ana", "Carlos", "María", "Pedro"};
 
         btnBuscar.setOnClickListener(v -> {
-            String textoIngresado = etBuscar.getText().toString(); // Obtener texto ingresado .trim()
-            String textoIngresadoUno = textoIngresado;
+            String textoIngresadoUno = etBuscar.getText().toString(); // Obtener texto ingresado .trim()
+            //String textoIngresadoUno = textoIngresado;
             boolean encontrado = false;
             /*
             for (String nombre : nombres) {
@@ -437,7 +437,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         public void getDataUno(){
             //Retrieving Data from IntroActivity
-            ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
+            //ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
             ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
             // of our Firebase database.
             firebaseDatabase = FirebaseDatabase.getInstance();
@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private void setUpMatchmodels() {
 
         ArrayList<String> numberList = (ArrayList<String>) getIntent().getSerializableExtra("key");
-        ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
+        //ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
 
 
         ///ArrayList<String> numberAgenda = (ArrayList<String>) getIntent().getSerializableExtra("agenda");
@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         return -1;
     }
 
-     */
+
     private void getdata() {
 
         //ArrayList<String> snapWordsNames = new ArrayList<>();
@@ -705,6 +705,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
     }
+
+     */
 
 
 
