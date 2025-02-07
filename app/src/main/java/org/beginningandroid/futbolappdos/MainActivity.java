@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     ArrayList<String> snapWordsSites = new ArrayList<>();
     ArrayList<String> snapWordsNames = new ArrayList<>();
 
+    //ArrayList<String> numberTitle = (ArrayList<String>) getIntent().getSerializableExtra("keyUno");
+
     // creating a variable for
     // our Firebase Database.
     FirebaseDatabase firebaseDatabase;
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Button btnConnect = findViewById(R.id.buttonConnection);
 
         getDataUno();
+        //TextView textViewUno = findViewById(R.id.textViewUno);
+        //textViewUno.setText(numberTitle.get(0));
 
         /*
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -489,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     // after getting the value we are setting
                     // our value to our text view in below line.
                     //textViewUno.setText(snapWordsSites.get(1) + numberTitle.get(0));
-                    textViewUno.setText(numberTitle.get(0));
+                    textViewUno.setText("Programación " + numberTitle.get(0));
                     Log.d("Fecha", "Este es la fecha: " + numberTitle.get(0));
                     Log.d("Link", "Este es la fecha: " + snapWordsSites.get(1));
                 }
