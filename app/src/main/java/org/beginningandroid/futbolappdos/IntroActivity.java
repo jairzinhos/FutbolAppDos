@@ -1,5 +1,6 @@
 package org.beginningandroid.futbolappdos;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
@@ -27,6 +30,11 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.LikeView;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.model.ShareLinkContent;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 //import com.facebook.share.widget.EmbedPostView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,6 +68,8 @@ public class IntroActivity extends AppCompatActivity {
     String title;
     String singleText;
 
+    private DatabaseReference userRef;
+
     //private EmbedPostView embedPostView;
 
     @Override
@@ -80,6 +90,57 @@ public class IntroActivity extends AppCompatActivity {
         Util.keyHashes(this);
 
         getHtmlFromWeb();
+
+        /*
+        //Approval Verification Section (6 Months)
+        String hybridId = DeviceUtils.getHybridId(this);
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(hybridId);
+
+        // Escuchar cambios en la aprobación
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Boolean isApproved = snapshot.child("isApproved").getValue(Boolean.class);
+                    Long expiresAt = snapshot.child("expiresAt").getValue(Long.class);
+
+                    if (isApproved != null && isApproved && expiresAt != null) {
+                        Date expirationDate = new Date(expiresAt);
+                        Date today = new Date();
+                        //Boolean decision = new BooleanDate().before(expirationDate);
+                        if (new Date().before(expirationDate)) {
+                            String Dia = "viernes";
+                            Log.d("Datos de E y A", "expiración: " + expirationDate);
+                            Log.d("Datos de E y A", "aprobación: " + today);
+                            Log.d("Datos de E y A", "Dia " + Dia);
+
+
+                            Toast.makeText(IntroActivity.this, " Uregistrado", Toast.LENGTH_SHORT).show();
+                            //goToMainActivity();
+                            //startActivity(new Intent(IntroActivity.this, MainActivity.class));
+                            finish();
+                            //return;
+                        }
+                    }
+                }
+                //Here create a blockedActivity instead of SplashActivity
+                startActivity(new Intent(IntroActivity.this, RegistroActivity.class));
+                String Dia = "jueves";
+                Log.d("Datos de E y A", "Dia " + Dia);
+                finish();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("RTDB", "Error: " + error.getMessage());
+            }
+        });
+
+         */
+
+        ////
+
+        ///
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

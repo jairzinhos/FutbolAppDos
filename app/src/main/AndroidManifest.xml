@@ -33,6 +33,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".PreIntroActivity"
+            android:exported="true">
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".VideoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"
@@ -43,6 +51,14 @@
         </activity>
         <activity
             android:name=".IntroActivity"
+            android:exported="true">
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".RegistroActivity"
             android:exported="true">
 
             <meta-data
