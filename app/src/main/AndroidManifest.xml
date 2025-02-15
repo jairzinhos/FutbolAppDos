@@ -41,6 +41,25 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".LoginAdminActivity"
+            android:exported="false">
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".AdminActivity"
+            android:exported="false">
+            <!-- No incluir intent-filter para evitar que aparezca en el launcher y el exported false para bloquear
+             el acceso directo
+             -->
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".VideoActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="sensorLandscape"

@@ -7,6 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".IntroActivity">
 
+    <FrameLayout
+        android:id="@+id/secretAdminArea"
+        android:layout_width="131dp"
+        android:layout_height="116dp"
+        android:background="@android:color/transparent">
+
+        <Button
+            android:layout_width="131dp"
+            android:layout_height="130dp"
+            android:onClick="secretAdminLogin"
+            android:visibility="visible"
+            android:background="@android:color/transparent" /><!-- Alto mínimo -->/>
+
+    </FrameLayout>
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"

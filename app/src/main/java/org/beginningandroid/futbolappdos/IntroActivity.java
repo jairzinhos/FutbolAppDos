@@ -46,6 +46,17 @@ public class IntroActivity extends AppCompatActivity {
     TextView text3;
     int x = 5;
     int y = 6;
+    //Para botón invisible
+    private int tapCount = 0;
+
+    //Para botón secreto administración
+    public void secretAdminLogin(View view) {
+        tapCount++;
+        if (tapCount >= 5) {
+            startActivity(new Intent(this, LoginAdminActivity.class));
+            tapCount = 0;
+        }
+    }
 
 
     ///List<String> listFutbolHeaders1;
@@ -78,6 +89,8 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
         text3 = findViewById(R.id.textView);
         button = findViewById(R.id.button);
+
+
 
         if (!isConnected()){
             Toast.makeText(IntroActivity.this, " No Internet Access", Toast.LENGTH_SHORT).show();
@@ -362,4 +375,5 @@ public class IntroActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
 }
