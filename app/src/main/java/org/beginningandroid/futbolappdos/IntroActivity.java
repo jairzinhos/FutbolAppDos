@@ -6,15 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,23 +24,20 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.LikeView;
-import com.facebook.share.widget.ShareButton;
-import com.facebook.share.model.ShareLinkContent;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 //import com.facebook.share.widget.EmbedPostView;
-import androidx.appcompat.app.AppCompatActivity;
+
 
 public class IntroActivity extends AppCompatActivity {
+
+    private WebView webView;
+
+    private DatabaseReference timelinesRef;
 
     Context context;
 
@@ -83,12 +82,161 @@ public class IntroActivity extends AppCompatActivity {
 
     //private EmbedPostView embedPostView;
 
+
+
+// Habilitar scroll vertical
+    //webView.getSettings().setJavaScriptEnabled(true);
+    //webView.getSettings().setDomStorageEnabled(true);
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         text3 = findViewById(R.id.textView);
         button = findViewById(R.id.button);
+
+        timelinesRef = FirebaseDatabase.getInstance().getReference("timelineEmbeddedXs");
+        //String embeddedCode= timelinesRef.child("embeddedCode").toString();
+
+        obtenerDato();
+
+        //String embeddedCode;
+        /*
+        timelinesRef.child("embeddedCode").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Si el dato es de tipo String. Si es otro tipo, cambia el método getValue.
+                    String embeddedCode = snapshot.getValue(String.class);
+                    Log.d("IntroActivity", "Dato obtenido: " + embeddedCode);
+                    // Aquí puedes utilizar el dato (por ejemplo, asignarlo a un TextView)
+                } else {
+                    Log.d("IntroActivity", "El dato especificado no existe.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("IntroActivity", "Error al leer el dato: " + error.getMessage());
+            }
+        });
+
+         */
+
+        //String embeddedCode = timelinesRef.child("embeddedCode").getKey();
+
+
+        //String storedHash = timelinesRef.child("password").getValue(String.class);
+
+        ///
+
+        //WebView webView = findViewById(R.id.webViewTweet);
+        webView = findViewById(R.id.webViewTweet);
+
+        // on below line setting web view client.
+        webView.setWebViewClient(new VideoActivity.WebClient());
+
+        // on below line setting web chrome client for web view.
+        webView.setWebChromeClient(new WebChromeClient());
+
+        // on below line getting web settings.
+        WebSettings webSettings = webView.getSettings();
+
+        // on below line setting java script enabled to true.
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true); // Necesario para el widget
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
+
+
+        //
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
+
+        // on below line setting file access to true.
+        webSettings.setAllowFileAccess(true);
+
+
+        /*
+
+        //String tweetUrl = "https://streamtp2.com/global1.php?stream=winplus2";
+        //webView.loadUrl("https://platform.twitter.com/embed/index.html?url=" + tweetUrl);
+        //String tweetUrl ="https://x.com/PizarraCrema/status/1874202956905799855";
+        String tweetUrl ="https://t.co/e0CuuWQZgf";
+
+        //String twitterEmbedCode = "<blockquote class=\"twitter-tweet\"><p lang=\"es\" dir=\"ltr\">Para cerrar el año, les regalo un hilo con los MEJORES MOMENTOS del 2024, DESDE LA TRIBUNA.<br><br>1. Campeones del torneo Apertura, ganándole 4-0 a Chankas en el Monumental y superando a Cristal en diferencia de goles.<br><br>Créditos: /UNORTE1924 en YouTube<a href=\"https://twitter.com/hashtag/Universitario?src=hash&amp;ref_src=twsrc%5Etfw\">#Universitario</a> <a href=\"https://twitter.com/SoyHinchaDeLaU?ref_src=twsrc%5Etfw\">@SoyHinchaDeLaU</a> <a href=\"https://t.co/e0CuuWQZgf\">pic.twitter.com/e0CuuWQZgf</a></p>&mdash; Pizarra Crema (@PizarraCrema) <a href=\"https://twitter.com/PizarraCrema/status/1874202956905799855?ref_src=twsrc%5Etfw\">December 31, 2024</a></blockquote>\n<script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>";
+        //String twitterEmbedCode = "<blockquote class=\"twitter-tweet\"><p lang=\"es\" dir=\"ltr\">Para cerrar el año, les regalo un hilo con los MEJORES MOMENTOS del 2024, DESDE LA TRIBUNA.<br><br>1. Campeones del torneo Apertura, ganándole 4-0 a Chankas en el Monumental y superando a Cristal en diferencia de goles.<br><br>Créditos: /UNORTE1924 en YouTube<a href=\"https://twitter.com/hashtag/Universitario?src=hash&amp;ref_src=twsrc%5Etfw\">#Universitario</a> <a href=\"https://twitter.com/SoyHinchaDeLaU?ref_src=twsrc%5Etfw\">@SoyHinchaDeLaU</a> <a href=\"https://t.co/e0CuuWQZgf\">pic.twitter.com/e0CuuWQZgf</a></p>&mdash; Pizarra Crema (@PizarraCrema) <a href=\"https://twitter.com/PizarraCrema/status/1874202956905799855?ref_src=twsrc%5Etfw\">December 31, 2024</a></blockquote> <script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>";
+
+        //String twitterEmbedCode ="<a class=\"twitter-timeline\" href=\"https://twitter.com/PizarraCrema?ref_src=twsrc%5Etfw\">Tweets by PizarraCrema</a> <script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>";
+        String timelineEmbedCode="<a class=\"twitter-timeline\" href=\"https://twitter.com/PizarraCrema?ref_src=twsrc%5Etfw\">Tweets by PizarraCrema</a> <script async src=\"https://platform.twitter.com/widgets.js\" charset=\"utf-8\"></script>";
+
+        int desiredHeight = 600;  // altura en píxeles
+        int tweetsToShow = 1;     // cantidad de tweets a mostrar
+
+        // Transforma el código copiando el timeline para agregar los atributos
+        String modifiedTimelineCode = transformTimelineEmbedCode(embeddedCode, desiredHeight, tweetsToShow);
+
+        // Envuelve el código en una estructura HTML completa
+        String finalHtml = wrapEmbedTweet(modifiedTimelineCode);
+        //Si quiero cargar los úlimos tweets pero hay demora en cargar
+        loadTimeline(finalHtml);
+        //loadTweet(finalHtml);
+
+         */
+
+        ///////
+
+        //loadTweet(twitterEmbedCode);
+
+
+
+        //loadTweet(tweetUrl);
+        //webView.loadUrl(tweetUrl);
+
+        // on below line setting url for the web page which we have to load in our web view.
+        ///webView.loadUrl(receivedValue);
+
+        //configureWebView();
+
+        // URL del tweet (ej: https://twitter.com/JuezCentral/status/123456789)
+        //String tweetUrl = "https://t.co/lErFqqSjyW";
+        //loadTweet(tweetUrl);
+
+        /*
+        // on below line setting web view client.
+        webView.setWebViewClient(new VideoActivity.WebClient());
+
+        // on below line setting web chrome client for web view.
+        webView.setWebChromeClient(new WebChromeClient());
+        ///webView.setWebChromeClient(new CustomWebChromeClient(VideoActivity.this));
+        // on below line getting web settings.
+        WebSettings webSettings = webView.getSettings();
+
+        // on below line setting java script enabled to true.
+        webSettings.setJavaScriptEnabled(true);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+
+         */
+
+        /*
+
+        FacebookScraper.scrapeLatestPost(new FacebookScraper.ScrapeCallback() {
+            @Override
+            public void onSuccess(String postContent) {
+                runOnUiThread(() -> {
+                    webView.loadData(postContent, "text/html", "UTF-8");
+                });
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Scraping", error);
+            }
+        });
+
+         */
+        ///
 
 
 
@@ -183,6 +331,49 @@ public class IntroActivity extends AppCompatActivity {
 
 
     }
+    private void configureWebView() {
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true); // Obligatorio
+        settings.setDomStorageEnabled(true); // Necesario para el widget
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        // Evitar redirecciones a navegador externo
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return true; // Manejar todo en el WebView
+            }
+        });
+    }
+    private void loadTweet(String tweetUrl) {
+        // Cargar el widget oficial de Twitter
+        String embedHtml = "<html>" +
+                "<head>" +
+                "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                "</head>" +
+                "<body>" +
+                "  <blockquote class='twitter-tweet'>" +
+                "    <p lang='es' dir='ltr'>Para cerrar el año, les regalo un hilo con los MEJORES MOMENTOS del 2024, DESDE LA TRIBUNA.<br><br>" +
+                "    1. Campeones del torneo Apertura, ganándole 4-0 a Chankas en el Monumental y superando a Cristal en diferencia de goles.<br><br>" +
+                "    Créditos: /UNORTE1924 en YouTube " +
+                "    <a href='https://twitter.com/hashtag/Universitario?src=hash&amp;ref_src=twsrc%5Etfw'>#Universitario</a> " +
+                "    <a href='https://twitter.com/SoyHinchaDeLaU?ref_src=twsrc%5Etfw'>@SoyHinchaDeLaU</a> " +
+                "    <a href='" + tweetUrl + "'>pic.twitter.com/e0CuuWQZgf</a></p>&mdash; Pizarra Crema " +
+                "    <a href='https://twitter.com/PizarraCrema/status/1874202956905799855?ref_src=twsrc%5Etfw'>December 31, 2024</a>" +
+                "  </blockquote>" +
+                "  <script async src='https://platform.twitter.com/widgets.js' charset='utf-8'></script>" +
+                "</body>" +
+                "</html>";
+
+        webView.loadDataWithBaseURL(
+                "https://platform.twitter.com",
+                embedHtml,
+                "text/html",
+                "UTF-8",
+                null
+        );
+    }
+
     private boolean isConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
 
@@ -374,6 +565,87 @@ public class IntroActivity extends AppCompatActivity {
 
         startActivity(intent);
 
+    }
+    private String wrapEmbedTweet(String modifiedTimelineCode) {
+        return "<!DOCTYPE html>" +
+                "<html>" +
+                "<head>" +
+                "  <meta charset='utf-8'>" +
+                "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                "</head>" +
+                "<body>" +
+                modifiedTimelineCode +
+                "</body>" +
+                "</html>";
+    }
+
+    private String transformTimelineEmbedCode(String timelineEmbedCode, int height, int tweetLimit) {
+        // Utilizamos replaceFirst para insertar los atributos en la etiqueta <a>
+        String modifiedCode = timelineEmbedCode.replaceFirst(
+                "<a\\s+class=\"twitter-timeline\"",
+                "<a class=\"twitter-timeline\" data-height=\"" + height + "\" data-tweet-limit=\"" + tweetLimit + "\""
+        );
+        return modifiedCode;
+    }
+
+    private void loadTimeline(String timelineHtml) {
+        webView.loadDataWithBaseURL(
+                "https://platform.twitter.com",
+                timelineHtml,
+                "text/html",
+                "UTF-8",
+                null
+        );
+    }
+
+    private void obtenerDato(){
+
+        timelinesRef = FirebaseDatabase.getInstance().getReference("timelineEmbeddedXs");
+        //String embeddedCode= timelinesRef.child("embeddedCode").toString();
+
+        //String embeddedCode;
+
+        timelinesRef.child("embeddedCode").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Si el dato es de tipo String. Si es otro tipo, cambia el método getValue.
+                    String embeddedCode = snapshot.getValue(String.class);
+                    Log.d("IntroActivity", "Dato obtenido: " + embeddedCode);
+                    // Aquí puedes utilizar el dato (por ejemplo, asignarlo a un TextView)
+                    // Una vez obtenido el dato, se llama a otro método que lo utiliza
+                    utilizarDato(embeddedCode);
+                } else {
+                    Log.d("IntroActivity", "El dato especificado no existe.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("IntroActivity", "Error al leer el dato: " + error.getMessage());
+            }
+        });
+    }
+
+    private void utilizarDato(String dato) {
+
+
+
+        // Aquí puedes realizar las acciones que dependan del dato obtenido,
+        // por ejemplo, actualizar la interfaz o iniciar otra actividad.
+        // Recuerda que este método se invoca solo después de obtener el dato.
+
+        int desiredHeight = 600;  // altura en píxeles
+        int tweetsToShow = 1;     // cantidad de tweets a mostrar
+
+        // Transforma el código copiando el timeline para agregar los atributos
+        String modifiedTimelineCode = transformTimelineEmbedCode(dato, desiredHeight, tweetsToShow);
+
+        // Envuelve el código en una estructura HTML completa
+        String finalHtml = wrapEmbedTweet(modifiedTimelineCode);
+        //Si quiero cargar los úlimos tweets pero hay demora en cargar
+
+        loadTimeline(finalHtml);
     }
 
 }

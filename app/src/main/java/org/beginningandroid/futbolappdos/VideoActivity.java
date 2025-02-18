@@ -95,6 +95,7 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     // on below line creating a class for web chrome client.
+    //static
     class WebChromeClient extends android.webkit.WebChromeClient {
         // on below line creating variables.
         private View customView;
@@ -148,7 +149,7 @@ public class VideoActivity extends AppCompatActivity {
         }
     }
     // on below line creating a class for Web Client.
-    class WebClient extends WebViewClient {
+    static class WebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
