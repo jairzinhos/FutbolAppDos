@@ -11,9 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 ///import android.view.View;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 //import android.view.View;
 //import android.webkit.WebView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 //import android.widget.ProgressBar;
@@ -31,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 ///import java.util.*;
@@ -54,6 +58,12 @@ import org.jsoup.nodes.Element;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     ArrayList<MatchModel> matchmodels = new ArrayList<>();
+
+
+    ///private EditText editText;
+    private RecyclerView recyclerView;
+    private CanalAdapter canalAdapter;
+    private List<Canal> listaCanales = new ArrayList<>();
 
     /*
     ArrayList<String> numberList;
@@ -108,6 +118,74 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         Button btnBuscar = findViewById(R.id.buttonSearch);
         TextView tvResultado = findViewById(R.id.tvResultado);
         Button btnConnect = findViewById(R.id.buttonConnection);
+
+        //Conexiones para búsqueda con recyclerView
+
+        recyclerView = findViewById(R.id.recyclerView);
+
+        // Ocultar RecyclerView inicialmente
+        recyclerView.setVisibility(View.GONE);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Inicializa el adaptador con el listener para el clic
+        canalAdapter = new CanalAdapter(listaCanales, canal -> {
+            // Al hacer clic, se completa el EditText con el nombre del canal
+            etBuscar.setText(canal.getNombre());
+            etBuscar.setSelection(etBuscar.getText().length()); // Posiciona el cursor al final
+            // Se oculta el RecyclerView
+            recyclerView.setVisibility(View.GONE);
+        });
+
+        // Inicializa el Adapter con una lista vacía
+        ///canalAdapter = new CanalAdapter(listaCanales);
+        recyclerView.setAdapter(canalAdapter);
+
+        // Cargar los datos desde Firebase
+        cargarDatosDesdeFirebase();
+
+        // Listener para el EditText
+        etBuscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String query = s.toString();
+                if(query.isEmpty()){
+                    // Si no hay texto, oculta el RecyclerView
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    // Si hay texto, muestra el RecyclerView y filtra la lista
+                    recyclerView.setVisibility(View.VISIBLE);
+                    filtrarLista(query);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+        });
+
+
+        /*
+
+        // Agregar listener al EditText para filtrar los resultados
+        etBuscar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                filtrarLista(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+         */
+
+
+
 
         getDataUno();
         //TextView textViewUno = findViewById(R.id.textViewUno);
@@ -1058,5 +1136,38 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
      */
+
+    private void cargarDatosDesdeFirebase() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("links");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listaCanales.clear(); // Limpiar lista antes de actualizar
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Canal canal = snapshot.getValue(Canal.class);
+                    if (canal != null) {
+                        listaCanales.add(canal);
+                    }
+                }
+                canalAdapter.notifyDataSetChanged(); // Actualiza la UI
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "Error al cargar datos", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void filtrarLista(String query) {
+        List<Canal> listaFiltrada = new ArrayList<>();
+        for (Canal canal : listaCanales) {
+            if (canal.getNombre().toLowerCase().contains(query.toLowerCase())) {
+                listaFiltrada.add(canal);
+            }
+        }
+        // Actualizar el Adapter con la lista filtrada
+        canalAdapter.actualizarLista(listaFiltrada);
+    }
 
 }
