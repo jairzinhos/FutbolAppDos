@@ -9,9 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -67,26 +69,42 @@ public class VideoActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebClient());
 
         // on below line setting web chrome client for web view.
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+                // Bloqueamos la creación de nuevas ventanas (pop-ups)
+                return false;
+
+
+            }
+
+
+        });
         ///webView.setWebChromeClient(new CustomWebChromeClient(VideoActivity.this));
         // on below line getting web settings.
         WebSettings webSettings = webView.getSettings();
 
         // on below line setting java script enabled to true.
         webSettings.setJavaScriptEnabled(true);
-        //
+        //Deshabilitar ventanas emergentes de JavaScript
+        //Si el problema proviene de pop-ups, puedes evitar que se abran nuevas ventanas:
+
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
+
+        webSettings.setSupportMultipleWindows(false);
+        ///////
+
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
         // on below line setting file access to true.
         webSettings.setAllowFileAccess(true);
 
         Intent receiverIntent = getIntent();
-        String receivedValue =  receiverIntent.getStringExtra("KEY_SENDER") + "";
+        String receivedValue = receiverIntent.getStringExtra("KEY_SENDER") + "";
 
 
         //URL link = new URL("https://arenacdmexico.com/canales/dtv2b.html?id=1251&", receivedValue );
-
-
 
 
         // on below line setting url for the web page which we have to load in our web view.
@@ -144,10 +162,12 @@ public class VideoActivity extends AppCompatActivity {
             this.originalSystemVisibility = getWindow().getDecorView().getSystemUiVisibility();
             this.originalOrientation = getRequestedOrientation();
             this.customViewCallback = callback;
-            FrameLayout decorView = (FrameLayout) getWindow().getDecorView();decorView.addView(this.customView, new FrameLayout.LayoutParams(-1, -1));
+            FrameLayout decorView = (FrameLayout) getWindow().getDecorView();
+            decorView.addView(this.customView, new FrameLayout.LayoutParams(-1, -1));
             getWindow().getDecorView().setSystemUiVisibility(3846);
         }
     }
+
     // on below line creating a class for Web Client.
     static class WebClient extends WebViewClient {
         @Override
@@ -155,12 +175,78 @@ public class VideoActivity extends AppCompatActivity {
             super.onPageStarted(view, url, favicon);
         }
 
+        ///
+        // Para dispositivos con API menor a 21
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (url.startsWith("intent://")) {
+                // Bloquea la redirección no deseada
+                return true;
+            }
+            // Para otras URLs, las carga normalmente
+            view.loadUrl(url);
+            return false;
+        }
+
+        // Para dispositivos con API 21 en adelante
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            if (url.startsWith("intent://")) {
+                // Bloquea la redirección no deseada
+                return true;
+            }
+            // Permite que el WebView maneje la URL normalmente
+            return false;
+        }
+
+        private Map<String, Boolean> loadedUrls = new HashMap<>();
+
+        @Nullable
+
+        // Interceptamos solicitudes para bloquear anuncios usando AdBlocker
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            boolean isAd;
+            if (!loadedUrls.containsKey(url)) {
+                isAd = AdBlocker.isAd(url);
+                loadedUrls.put(url, isAd);
+            } else {
+                isAd = loadedUrls.get(url);
+            }
+            if (isAd) {
+                // Si se detecta un anuncio, retornamos una respuesta vacía
+                return AdBlocker.createEmptyResource();
+            }
+            return super.shouldInterceptRequest(view, url);
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            boolean isAd;
+            if (!loadedUrls.containsKey(url)) {
+                isAd = AdBlocker.isAd(url);
+                loadedUrls.put(url, isAd);
+            } else {
+                isAd = loadedUrls.get(url);
+            }
+            if (isAd) {
+                return AdBlocker.createEmptyResource();
+            }
+            return super.shouldInterceptRequest(view, request);
+        }
+
+
         //Blocker settings
+        /*
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
             return true;
         }
+
+
 
         private Map<String, Boolean> loadedUrls = new HashMap<>();
         @Nullable
@@ -178,12 +264,110 @@ public class VideoActivity extends AppCompatActivity {
                         super.shouldInterceptRequest(view, url);
             }
 
+         */
+
 
         //
+        /*
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String js = "javascript:(function() {" +
+                    // Oculta el elemento específico por su selector  // Selector de Devtools F12 = #vplayer > div.afs_ads.ad-placement
+                    "var adSpecific = document.querySelectorAll('#vplayer > div.afs_ads.ad-placement');" +
+                    "for (var i = 0; i < adSpecific.length; i++) {" +
+                    "    adSpecific[i].style.display = 'none';" +
+                    "}" +
+                    // Oculta elementos genéricos que puedan contener anuncios
+                    "var spans = document.getElementsByTagName('span');" +
+                    "for (var i = 0; i < spans.length; i++) {" +
+                    "    var text = spans[i].innerText.trim().toLowerCase();" +
+                    "    if(text.indexOf('ad') !== -1 || text.indexOf('ads') !== -1 || " +
+                    "       text.indexOf('publicidad') !== -1 || text.indexOf('sponsored') !== -1) {" +
+                    "        var container = spans[i].parentNode;" +
+                    "        if(container) { container.style.display = 'none'; }" +
+                    "    }" +
+                    "}" +
+                    "})()";
+            view.evaluateJavascript(js, null);
+        }
+
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            String js = "javascript:(function() {" +
+                    "var ads = document.querySelectorAll('body > div > div:nth-child(1)');" +
+                    "for (var i = 0; i < ads.length; i++) {" +
+                    "    ads[i].style.display = 'none';" +
+                    "}" +
+                    "})()";
+            view.evaluateJavascript(js, null);
+        }
+
+        ///
+        @Override
+public void onPageFinished(WebView view, String url) {
+    super.onPageFinished(view, url);
+    // Ajusta los selectores de CSS según los elementos que quieras ocultar
+    String js = "javascript:(function() {" +
+            "var adElements = document.querySelectorAll('.ad, .ads, .floating-ad, #ad-banner');" +
+            "for(var i=0; i<adElements.length; i++) {" +
+            "    adElements[i].style.display = 'none';" +
+            "}" +
+            "})()";
+    view.evaluateJavascript(js, null);
+}
+
+        ///
+
+
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String js = "javascript:(function() {" +
+                    // Oculta el elemento específico por su selector  // Selector de Devtools F12 = #vplayer > div.afs_ads.ad-placement
+                    "var adSpecific = document.querySelectorAll('body > div > div:nth-child(1) > div');" +
+                    "for (var i = 0; i < adSpecific.length; i++) {" +
+                    "    adSpecific[i].style.display = 'none';" +
+                    "}" +
+                    // Oculta elementos genéricos que puedan contener anuncios
+                    "var spans = document.getElementsByTagName('span');" +
+                    "for (var i = 0; i < spans.length; i++) {" +
+                    "    var text = spans[i].innerText.trim().toLowerCase();" +
+                    "    if(text.indexOf('ad') !== -1 || text.indexOf('ads') !== -1 || " +
+                    "       text.indexOf('!important') !== -1 || text.indexOf('!important') !== -1) {" +
+                    "        var container = spans[i].parentNode;" +
+                    "        if(container) { container.style.display = 'none'; }" +
+                    "    }" +
+                    "}" +
+                    "})()";
+            view.evaluateJavascript(js, null);
+        }
+
+         */
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String js = "javascript:(function() {" +
+                    // Oculta el elemento específico por su selector  // Selector de Devtools F12 = #vplayer > div.afs_ads.ad-placement
+                    "var adSpecific = document.querySelectorAll('body > div > div > div > span > span');" +
+                    "for (var i = 0; i < adSpecific.length; i++) {" +
+                    "    adSpecific[i].style.display = 'none';" +
+                    "}" +
+                    // Oculta elementos genéricos que puedan contener anuncios
+                    "var spans = document.getElementsByTagName('span');" +
+                    "for (var i = 0; i < spans.length; i++) {" +
+                    "    var text = spans[i].innerText.trim().toLowerCase();" +
+                    "    if(text.indexOf('ad') !== -1 || text.indexOf('ads') !== -1 || || text.indexOf('!important') !== -1 " +
+                    "       text.indexOf('publicidad') !== -1 || text.indexOf('sponsored') !== -1) {" +
+                    "        var container = spans[i].parentNode;" +
+                    "        if(container) { container.style.display = 'none'; }" +
+                    "    }" +
+                    "}" +
+                    "})()";
+            view.evaluateJavascript(js, null);
         }
     }
 }
