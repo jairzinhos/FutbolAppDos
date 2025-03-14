@@ -531,6 +531,7 @@ public class IntroActivity extends AppCompatActivity {
                         //text3.setText(Html.fromHtml(stringBuilder.toString()));
                         ///title = listFutbolHeaders.get(0);
                         //text3.setText("" + listFutbolHeaders1.get(1) + listFutbolHeaders1LinkMatches.get(8));
+                        //text3.setText("En pruebas");
                         text3.setText("" + listFutbolTitles.get(0));
                         //singleText = listFutbolHeaders1.get(2);
 
@@ -558,6 +559,7 @@ public class IntroActivity extends AppCompatActivity {
     private void goToMainActivity() {
 
         text3.setText("" + listFutbolTitles.get(0));
+        Log.e("Testing FutbolRed", "goToMainActivity: "+ listFutbolTitles.get(0));
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("key", listFutbolHeaders1);

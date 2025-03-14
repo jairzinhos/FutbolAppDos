@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.WebResourceRequest;
@@ -51,6 +53,9 @@ public class VideoActivity extends AppCompatActivity {
 
              */
         }
+        // Haciendo ajustes para que la orientación horizontal se acomode de acuerdo al sensor
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        //
 
 
         ///
@@ -112,6 +117,26 @@ public class VideoActivity extends AppCompatActivity {
         //webView.loadUrl(link.toString());
     }
 
+    //
+    /*
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Aunque la actividad siempre se muestra en horizontal, aquí puedes ajustar detalles de la UI
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Actualizamos la UI para que se vea correctamente en cualquier landscape (normal o invertido)
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+     */
+
+
+    //
+
     // on below line creating a class for web chrome client.
     //static
     class WebChromeClient extends android.webkit.WebChromeClient {
@@ -134,6 +159,21 @@ public class VideoActivity extends AppCompatActivity {
             }
             return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
         }
+        /*
+        @Override
+        public void onHideCustomView() {
+            if (customView == null) {
+                return;
+            }
+            ((ViewGroup) getWindow().getDecorView()).removeView(customView);
+            customView = null;
+            customViewCallback.onCustomViewHidden();
+            webView.setVisibility(View.VISIBLE);
+            // Restauramos la UI normal
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        }
+
+         */
 
         @Override
         public void onHideCustomView() {
@@ -166,7 +206,34 @@ public class VideoActivity extends AppCompatActivity {
             decorView.addView(this.customView, new FrameLayout.LayoutParams(-1, -1));
             getWindow().getDecorView().setSystemUiVisibility(3846);
         }
+
+         /*
+
+        @Override
+        public void onShowCustomView(View view, CustomViewCallback callback) {
+            if (customView != null) {
+                callback.onCustomViewHidden();
+                return;
+            }
+            customView = view;
+            customViewCallback = callback;
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            // Ocultamos el WebView y mostramos la vista personalizada
+            webView.setVisibility(View.GONE);
+            ((ViewGroup) getWindow().getDecorView()).addView(customView,
+                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
+          */
+
+
     }
+
+
 
     // on below line creating a class for Web Client.
     static class WebClient extends WebViewClient {
@@ -370,4 +437,5 @@ public void onPageFinished(WebView view, String url) {
             view.evaluateJavascript(js, null);
         }
     }
+
 }
