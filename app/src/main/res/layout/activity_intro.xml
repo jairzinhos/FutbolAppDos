@@ -50,8 +50,16 @@
 
             app:layout_constraintTop_toBottomOf="@+id/button" />
     </LinearLayout>
+    <!-- Invisible Webview to bring Json from JS -->
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"/>
 
     <!-- WebView con el post (50% de la pantalla + scroll interno) -->
+
+
     <WebView
         android:id="@+id/webViewTweet"
         android:layout_width="match_parent"

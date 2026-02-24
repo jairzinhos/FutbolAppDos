@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -17,13 +18,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.Map;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -250,7 +260,10 @@ public class IntroActivity extends AppCompatActivity {
 
         Util.keyHashes(this);
 
-        getHtmlFromWeb();
+        //getHtmlFromWeb();
+        //Just using Json method for dynamic webs
+        //getHtmlFromWebJson();
+        getJsonWithWebView();
 
         /*
         //Approval Verification Section (6 Months)
@@ -416,6 +429,19 @@ public class IntroActivity extends AppCompatActivity {
 
 
     }
+    private String formatFecha(String fechaRaw) throws Exception {
+
+        SimpleDateFormat input = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = input.parse(fechaRaw);
+
+        SimpleDateFormat output =
+                new SimpleDateFormat("EEEE d 'de' MMMM", new Locale("es", "ES"));
+
+        String fecha = output.format(date);
+
+        // Capitalizar primera letra
+        return fecha.substring(0,1).toUpperCase() + fecha.substring(1);
+    }
 
     private void getHtmlFromWeb () {
         new Thread(new Runnable() {
@@ -431,7 +457,20 @@ public class IntroActivity extends AppCompatActivity {
                 Document agen = null;
                 Document linkMatch = null;
                 try {
-                    doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol").get();
+
+                    doc = Jsoup.connect("https://www.futbolred.com/parrilla-de-futbol")
+                            .userAgent("Mozilla/5.0")
+                            .timeout(15000)
+                            .get();
+                    if (doc == null) {
+                        runOnUiThread(() ->
+                                text3.setText("❌ Error: doc es null")
+                        );
+                        return;
+                    }
+
+                    System.out.println(doc.html());
+                    Log.d("SCRAPING_DEBUG", doc.html());
 
                     //String title = doc.title();
                     //String title = doc.selectFirst("div[class");
@@ -440,9 +479,24 @@ public class IntroActivity extends AppCompatActivity {
                     ///Elements links = doc.select("a[href]");
                     //Elements links = doc.select("table");
                     Element links = doc.select("table").first();
+
+                    //Para que no se bloquee la app sino que aparezca el mensaje
+
+                    if (links == null) {
+                        runOnUiThread(() ->
+                                text3.setText("⚠️ No se encontró la tabla (JS o bloqueo)")
+                        );
+                        return;
+                    }
                     //Elements linksUno = doc.selectFirst("links");
                     Elements ths = links.select("td");
+
                     Element titles = links.select("th").first();
+
+                    if (titles != null) {
+                        listFutbolTitles.clear();
+                        listFutbolTitles.add(titles.text());
+                    }
 
                     //listFutbolHeaders.add(ths.text());
                     listFutbolTitles.clear();
@@ -521,18 +575,30 @@ public class IntroActivity extends AppCompatActivity {
                     //for (Element link : links) {
                     //stringBuilder.append("").append("Link : ").append(link.attr("href")).append(" ").append("Text : ").append(link.text());
                     //}
-                } catch (IOException e) {
+                } catch (Exception e) {   // 👈 cambia IOException por Exception
                     e.printStackTrace();
-                }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                    runOnUiThread(() ->
+                            text3.setText("💥 Crash: " + e.getMessage())
+                    );
+                }
+                runOnUiThread(() -> {
+
+                    if (listFutbolTitles == null || listFutbolTitles.isEmpty()) {
+                        text3.setText("⚠️ No se obtuvieron datos del scraping");
+                        return;
+                    }
+
+                    text3.setText(listFutbolTitles.get(0));
+                });
+                //runOnUiThread(new Runnable() {
+                    //@Override
+                    //public void run() {
                         //text3.setText(Html.fromHtml(stringBuilder.toString()));
                         ///title = listFutbolHeaders.get(0);
                         //text3.setText("" + listFutbolHeaders1.get(1) + listFutbolHeaders1LinkMatches.get(8));
                         //text3.setText("En pruebas");
-                        text3.setText("" + listFutbolTitles.get(0));
+                        //text3.setText("" + listFutbolTitles.get(0));
                         //singleText = listFutbolHeaders1.get(2);
 
                         /*
@@ -550,9 +616,151 @@ public class IntroActivity extends AppCompatActivity {
 
                         //}
                         //String headDos = listFutbolHeaders1.get(0).toString();
-                    }
-                });
+                    //}
+                //});
             }
+        }).start();
+    }
+    private void getJsonWithWebView() {
+
+        WebView webView = findViewById(R.id.webView);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void processJSON(String json) {
+
+                try {
+
+                    JSONObject root = new JSONObject(json);
+
+                    listFutbolHeaders1.clear();
+                    listFutbolTitles.clear();
+
+                    JSONObject partidos = root.getJSONObject("partidos");
+
+                    Iterator<String> fechasKeys = partidos.keys();
+
+                    if (fechasKeys.hasNext()) {
+
+                        String fechaKey = fechasKeys.next();
+
+                        String fechaBonita = formatFecha(fechaKey);
+                        listFutbolTitles.add(fechaBonita);
+
+                        JSONArray ligasArray = partidos.getJSONArray(fechaKey);
+
+                        for (int i = 0; i < ligasArray.length(); i++) {
+
+                            JSONObject ligaObj = ligasArray.getJSONObject(i);
+                            Iterator<String> ligaKeys = ligaObj.keys();
+
+                            while (ligaKeys.hasNext()) {
+
+                                String nombreLiga = ligaKeys.next();
+                                JSONArray partidosArray = ligaObj.getJSONArray(nombreLiga);
+
+                                for (int j = 0; j < partidosArray.length(); j++) {
+
+                                    JSONObject partido = partidosArray.getJSONObject(j);
+
+                                    JSONObject local = partido.getJSONObject("equipolocal");
+                                    JSONObject visitante = partido.getJSONObject("equipovisitante");
+
+                                    String nombreLocal = local.getString("nombre");
+                                    String nombreVisitante = visitante.getString("nombre");
+
+                                    listFutbolHeaders1.add(
+                                            nombreLocal + " vs " + nombreVisitante
+                                    );
+
+                                    listFutbolHeaders1.add(nombreLiga);
+
+                                    long timestamp =
+                                            partido.getLong("fechainicio") * 1000L;
+
+                                    SimpleDateFormat horaFormat =
+                                            new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                                    String hora =
+                                            horaFormat.format(new Date(timestamp));
+
+                                    listFutbolHeaders1.add(hora);
+
+                                    String canales =
+                                            partido.optString("canales", "Por confirmar");
+
+                                    listFutbolHeaders1.add(canales);
+                                }
+                            }
+                        }
+                    }
+
+                    // 👉 IMPORTANTE: navegar cuando termine
+                    //runOnUiThread(() -> goToMainActivity());
+
+                } catch (Exception e) {
+
+                    runOnUiThread(() ->
+                            text3.setText("💥 Error parseando JSON: " + e.getMessage())
+                    );
+                }
+            }
+        }, "Android");
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+
+                String js =
+                        "fetch('https://www.futbolred.com/files/feeds/marcadoresenlineaoptimizado.json')" +
+                                ".then(function(r){ return r.text(); })" +
+                                ".then(function(data){ Android.processJSON(data); });";
+
+                view.evaluateJavascript(js, null);
+            }
+        });
+
+        webView.loadUrl("https://www.futbolred.com/parrilla-de-futbol");
+    }
+    private void getHtmlFromWebJson() {
+
+        new Thread(() -> {
+
+            try {
+
+                Connection.Response response = Jsoup.connect(
+                                "https://www.futbolred.com/files/feeds/marcadoresenlineaoptimizado.json"
+                        )
+                        .ignoreContentType(true)
+                        .method(Connection.Method.GET)
+                        .header("User-Agent",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+                        .header("Accept", "application/json, text/plain, */*")
+                        .header("Referer", "https://www.futbolred.com/parrilla-de-futbol")
+                        .header("Origin", "https://www.futbolred.com")
+                        .header("Connection", "keep-alive")
+                        .timeout(20000)
+                        .execute();
+
+                String json = response.body();
+
+                Log.d("JSON_DEBUG", json.substring(0, Math.min(500, json.length())));
+
+                JSONObject root = new JSONObject(json);
+
+                runOnUiThread(() ->
+                        text3.setText("✅ JSON recibido")
+                );
+
+            } catch (Exception e) {
+
+                runOnUiThread(() ->
+                        text3.setText("💥 Error: " + e.getMessage())
+                );
+            }
+
         }).start();
     }
 
@@ -560,6 +768,9 @@ public class IntroActivity extends AppCompatActivity {
 
         text3.setText("" + listFutbolTitles.get(0));
         Log.e("Testing FutbolRed", "goToMainActivity: "+ listFutbolTitles.get(0));
+
+        //text3.setText("" + listFutbolTitles.get(0));
+        //Log.e("Testing FutbolRed", "goToMainActivity: "+ listFutbolTitles.get(0));
 
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("key", listFutbolHeaders1);
